@@ -190,12 +190,15 @@ class mage:
         drawText('(1): Fireball.  This ability does '+str(self.intellect*2)+' to '+str(self.intellect*7)+' damage.  Its damage is increased by your Intellect.',font,windowSurface,100,30,TEXTCOLOR)
         drawText('(2): Barrier.  This ability creates a magical shield that absorbs '+str(self.intellect+(self.wisdom/2))+' to '+str((self.intellect+(self.wisdom/2))*3)+' damage.',font,windowSurface,100,60,TEXTCOLOR)
         drawText('     The amount absorbed increases based on Intellect and Wisdom',font,windowSurface,100,90,TEXTCOLOR)
+        drawText('(3): Summon Minion.  This ability summons a minion that attacks for 4 turns.',font,windowSurface,100,120,TEXTCOLOR)
+        drawText('     Its damage is increased by your Intellect and Wisdom.',font,windowSurface,100,150,TEXTCOLOR)
         print "Fireball(1).  This ability does {0} to {1} damage.\n".format(self.intellect*2,self.intellect*7)
         print "Barrier(2). This ability creates a magical shield that absorbs {0} to {1} damage.".format(self.intellect+(self.wisdom/2),(self.intellect+(self.wisdom/2))*2)
         print " "
     def f_ability0(self):
         if self.minion > 0:
             damage = random.randrange(self.intellect*2,self.intellect*7)+self.min_damage
+            self.minion -= 1
         else:
             damage = random.randrange(self.intellect*2,self.intellect*7)
         crit = random.randrange(1,100)
@@ -210,14 +213,14 @@ class mage:
             print "You MISS completely!"
         elif crit <= self.crit:
             self.damage = damage*2
-            dam = str(self.damage)
+            dam = str((self.damage/2 - self.min_damage)*2)
             drawText('Your Fireball CRITS for '+dam,font,windowSurface,0,0,TEXTCOLOR)
             if self.minion > 0:
-                drawText('Your minion hits for '+str(self.min_damage),font,windowSurface,0,25,TEXTCOLOR)
+                drawText('Your minion CRITS for '+str(self.min_damage*2),font,windowSurface,0,25,TEXTCOLOR)
             print 'Your Fireball {0} for {1} damage.'.format(self.dict[5],self.damage)
         else:
             self.damage = damage
-            dam = str(self.damage)
+            dam = str(self.damage-self.min_damage)
             drawText('Your Fireball hits for '+dam,font,windowSurface,0,0,TEXTCOLOR)
             if self.minion > 0:
                 drawText('Your minion hits for '+str(self.min_damage),font,windowSurface,0,25,TEXTCOLOR)
@@ -228,6 +231,10 @@ class mage:
         self.shield = shield
         shield = str(shield)
         drawText('You create a '+shield+' point shield.',font,windowSurface,0,0,TEXTCOLOR)
+        if self.minion > 0:
+            self.minion -= 1
+            self.damage = self.min_damage
+            drawText('Your minion hits for '+str(self.min_damage),font,windowSurface,0,25,TEXTCOLOR)
         print "You create a {0} point shield".format(shield)
      
     def f_ability2(self):
@@ -237,7 +244,7 @@ class mage:
     def f_minion(self):
     	minion_damage = (self.intellect + self.wisdom)/2
      	if (self.minion):
-     		self.min_damage += minion_damage
+     		self.min_damage = minion_damage
      		self.minion -= 1
      		if self.minion == 0:
                     self.min_damage = 0
