@@ -191,26 +191,28 @@ def alt_mage():
     data = [altImage,altRect]
     return data
 
-def mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack):
+def mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack):
     minion = mage_minion()
+    min_attack = True
     for i in range(6):
-        mage_battle(place,enemy_place,plyr,enemy,player,en_attack)
+        mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
         minion[1].topleft = (220+(i*50),290)
         windowSurface.blit(minion[0], minion[1])
         pygame.display.update()
         mainClock.tick(10)
+    min_attack = False
     if fireball != []:
         for i in range(6):
             fireball[1].topleft = (220+(i*50),290)
-            mage_battle(place,enemy_place,plyr,enemy,player,en_attack)
+            mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
             windowSurface.blit(fireball[0], fireball[1])
             pygame.display.update()
             mainClock.tick(10)
     
-def abilityone(ability1,place,enemy_place,plyr,enemy,player,en_attack):
+def abilityone(ability1,place,enemy_place,plyr,enemy,player,en_attack,min_attack):
     for i in range(6):
         if player[2].cls == 'mage':
-            mage_battle(place,enemy_place,plyr,enemy,player,en_attack)
+            mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
             ability1[1].topleft = (220+(i*50),290)
             windowSurface.blit(ability1[0], ability1[1])
         elif player[2].cls == 'cleric':
@@ -225,12 +227,13 @@ def abilityone(ability1,place,enemy_place,plyr,enemy,player,en_attack):
         mainClock.tick(10)
         #time.sleep(0.1)
 
-def enemy_attack(place,enemy_place,plyr,player,en_attack):
+def enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack):
     enemy = enemy_place
     en_attack = True
+    min_attack = False
     for i in range(6):
         if player[2].cls == 'mage':
-            mage_battle(place,enemy_place,plyr,enemy,player,en_attack)  
+            mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)  
         elif player[2].cls == 'warrior':
             warrior_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'cleric':
@@ -243,6 +246,7 @@ def enemy_attack(place,enemy_place,plyr,player,en_attack):
         mainClock.tick(10)
     enemy[1].topleft = (500,200)
     en_attack = False
+    
 def terminate():
     pygame.quit()
     sys.exit()
@@ -273,11 +277,11 @@ def drawText(text, font, surface, x, y, color):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 
-def mage_battle(place,enemy_place,plyr,enemy,player,en_attack):
+def mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack):
     windowSurface.blit(place[0],place[1])
     if en_attack != True:
         windowSurface.blit(enemy_place[0],enemy_place[1])
-    if player[2].minion > 0:
+    if player[2].minion > 0 and min_attack == False:
         plyralt = alt_mage()
         plyralt[1].topleft = (150,350)
         windowSurface.blit(plyralt[0],plyralt[1])
@@ -354,6 +358,7 @@ def battle(place,player,enemy):
     enemy_place[1].topleft = (500,200)
     enemy_place[0] = pygame.transform.scale(enemy[0],(300,330))
     en_attack = False
+    min_attack = False
 #    player_place = player
 ##    enemy_place = enemy
 ##    player_place[1].topleft = (200,400)
@@ -374,13 +379,13 @@ def battle(place,player,enemy):
                     if player[2].cls == 'mage':
                         fireball = mage_fireball()
                         if player[2].minion > 0:
-                            mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack)
+                            mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
                         else:
-                            abilityone(fireball,place,enemy_place,plyr,enemy,player,en_attack)
+                            abilityone(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
                     if player[2].cls == 'cleric':
                         holyblow = cleric_holyblow()
-                        abilityone(holyblow,place,enemy_place,plyr,enemy,player,en_attack)
-                    enemy_attack(place,enemy_place,plyr,player,en_attack)        
+                        abilityone(holyblow,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                    enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                     player[2].f_ability0()
                     enemy[2].f_ability0()
                     alive = damage(enemy[2],player[2],alive)
@@ -392,8 +397,8 @@ def battle(place,player,enemy):
                         player[2].f_ability1()
                         fireball = []
                         if player[2].minion > 0:
-                            mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack)
-                        enemy_attack(place,enemy_place,plyr,player,en_attack)        
+                            mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                        enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         enemy[2].f_ability0()
                         alive = damage(enemy[2],player[2],alive)
                         pygame.display.update()
@@ -402,7 +407,7 @@ def battle(place,player,enemy):
                         empower = cleric_empowerment()
                         empower[1].topleft = (150,350)
                         player[2].empowered = 1
-                        enemy_attack(place,enemy_place,plyr,player,en_attack)        
+                        enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         player[2].f_ability1()
                         enemy[2].f_ability0()
                         alive = damage(enemy[2],player[2],alive)
@@ -412,7 +417,7 @@ def battle(place,player,enemy):
                         tact = warrior_tactics()
                         tact[1].topleft = (150,350)
                         player[2].tactics = 1
-                        enemy_attack(place,enemy_place,plyr,player,en_attack)        
+                        enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         player[2].f_ability1()
                         enemy[2].f_ability0()
                         alive = damage(enemy[2],player[2],alive)
@@ -420,8 +425,8 @@ def battle(place,player,enemy):
                         time.sleep(1)
                     if player[2].cls == 'warlock':
                         ent = warlock_entropic()
-                        abilityone(ent,place,enemy_place,plyr,enemy,player,en_attack)
-                        enemy_attack(place,enemy_place,plyr,player,en_attack)        
+                        abilityone(ent,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                        enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         player[2].f_ability1()
                         enemy[2].f_ability0()
                         alive = damage(enemy[2],player[2],alive)
@@ -435,8 +440,8 @@ def battle(place,player,enemy):
                         player[2].tactics = 1
                     if player[2].cls == 'mage':
                         fireball = []
-                        mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack)
-                    enemy_attack(place,enemy_place,plyr,player,en_attack)
+                        mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                    enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     if player[2].cls != 'warlock':
                         player[2].f_ability2()
                     enemy[2].f_ability0()
@@ -450,7 +455,7 @@ def battle(place,player,enemy):
                     time.sleep(1)
                     
         if player[2].cls == 'mage':
-            mage_battle(place,enemy_place,plyr,enemy,player,en_attack)
+            mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
         elif player[2].cls == 'warrior':
             warrior_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'cleric':
