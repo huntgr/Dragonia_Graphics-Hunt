@@ -240,6 +240,8 @@ def default_attack(place,enemy_place,plyr,player,en_attack,min_attack):
             cleric_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'warlock':
             warlock_battle(place,enemy_place,plyr,enemy,player,en_attack)
+        elif player[2].cls == 'swashbuckler':
+            swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack)
         pygame.display.update()
         mainClock.tick(10)
     plyr[1].topleft = (200,400)
@@ -257,6 +259,8 @@ def enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack):
             cleric_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'warlock':
             warlock_battle(place,enemy_place,plyr,enemy,player,en_attack)
+        elif player[2].cls == 'swashbuckler':
+            swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack)
         enemy[1].topleft = (500-(i*50),200)
         windowSurface.blit(enemy[0],enemy[1])    
         pygame.display.update()
@@ -349,6 +353,15 @@ def warlock_battle(place,enemy_place,plyr,enemy,player,en_attack):
     enemy_health(enemy[2].health,enemy_place)
     player_health(player[2].health,plyr,player[2].shield)
     pygame.display.update()
+
+def swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack):
+    windowSurface.blit(place[0],place[1])
+    if en_attack != True:
+        windowSurface.blit(enemy_place[0],enemy_place[1])
+    windowSurface.blit(plyr[0],plyr[1])
+    enemy_health(enemy[2].health,enemy_place)
+    player_health(player[2].health,plyr,player[2].shield)
+    pygame.display.update()
     
 def battle(place,player,enemy):
     alive = [True,True,True]
@@ -368,6 +381,11 @@ def battle(place,player,enemy):
         img = pygame.image.load('warlock_dragonia.png')
         rect = img.get_rect()
         plyr = [img,rect]
+    elif player[2].cls == 'swashbuckler':
+        img = pygame.image.load('swashbuckler_dragonia.png')
+        rect = img.get_rect()
+        plyr = [img,rect]
+        player[2].bleed = 0
     enemy_place = enemy
     ability1 = []
     plyr[1].topleft = (200,400)
@@ -404,6 +422,8 @@ def battle(place,player,enemy):
                     if player[2].cls == 'warrior':
                         default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     if player[2].cls == 'warlock':
+                        default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
+                    if player[2].cls == 'swashbuckler':
                         default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                     player[2].f_ability0()
@@ -452,7 +472,15 @@ def battle(place,player,enemy):
                         alive = damage(enemy[2],player[2],alive)
                         pygame.display.update()
                         time.sleep(1)
-                  
+                    if player[2].cls == 'swashbuckler':
+                        default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
+                        enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
+                        player[2].f_ability1()
+                        enemy[2].f_ability0()
+                        alive = damage(enemy[2],player[2],alive)
+                        pygame.display.update()
+                        time.sleep(1)
+                        
                 if event.key == ord('3'):
                     if player[2].cls == 'warlock':
                         player[2].f_ability2()
@@ -461,9 +489,10 @@ def battle(place,player,enemy):
                     if player[2].cls == 'mage':
                         fireball = []
                         mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                    if player[2].cls == 'swashbuckler':
+                        default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)
-                    if player[2].cls != 'warlock':
-                        player[2].f_ability2()
+                    player[2].f_ability2()
                     enemy[2].f_ability0()
                     alive = damage(enemy[2],player[2],alive)
                     pygame.display.update()
@@ -482,6 +511,8 @@ def battle(place,player,enemy):
             cleric_battle(place,enemy_place,plyr,enemy,player,en_attackv)
         elif player[2].cls == 'warlock':
             warlock_battle(place,enemy_place,plyr,enemy,player,en_attack)
+        elif player[2].cls == 'swashbuckler':
+            swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack)
         if alive[0] == True and alive[1] == False:
             player[2].lvl += 1
             level_up(player)
@@ -528,6 +559,7 @@ def pick_hero(heroes):
     drawText('Warrior(2)',font,windowSurface,100, 30,(178,34,34))
     drawText('Cleric(3)',font,windowSurface,225, 30,(0,255,255))
     drawText('Warlock(4)',font,windowSurface,330, 30,(0,100,0))
+    drawText('Swashbuckler(5)',font,windowSurface,470, 30,(0,200,100))
     pygame.display.update()
     choosing = True
     while choosing == True:
@@ -573,6 +605,15 @@ def pick_hero(heroes):
                     choice = 3
                     class_ = warlock('Kripte')
                     choosing = False
+                if event.key == ord('5'):
+                    #windowSurface.fill(BACKGROUNDCOLOR)
+                    windowSurface.blit(dragonia[0],dragonia[1])
+                    drawText('You chose Swashbuckler!',font,windowSurface,0,0,(0,0,0))
+                    pygame.display.update()
+                    time.sleep(1)
+                    choice = 4
+                    class_ = swashbuckler('Kripte')
+                    choosing = False  
                     
     heroImage = pygame.image.load(heroes[choice])
     heroRect = heroImage.get_rect()
@@ -587,7 +628,7 @@ def class_abilities(player):
     waitForPlayerToPressKey()
     
 def place():
-    places = ['cave_dragonia.png','desert.png','water.png','sun.png']
+    places = ['cave_dragonia.png','desert_dragonia.png','water.png','sun.png']
     rand = random.randint(0,len(places)-1)
     placeImage = pygame.image.load(places[rand])
     placeRect = placeImage.get_rect()
@@ -760,7 +801,7 @@ while True:
     score = 0
     moveLeft = moveRight = moveUp = moveDown = False
     pygame.mixer.music.play(-1, 0.0)
-    heroes = ['mage_dragonia.png','warrior_dragonia.png','cleric_dragonia.png','warlock_dragonia.png']
+    heroes = ['mage_dragonia.png','warrior_dragonia.png','cleric_dragonia.png','warlock_dragonia.png','swashbuckler_dragonia.png']
     #windowSurface.fill(BACKGROUNDCOLOR)
     windowSurface.blit(dragonia[0],dragonia[1])
     player = pick_hero(heroes)

@@ -20,6 +20,141 @@ def drawText(text, font, surface, x, y, color):
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 
+class swashbuckler:
+    def __init__(self,name):
+        self.cls = 'swashbuckler'
+        self.dead = 0
+        self.name = name
+        self.stamina = 15
+        self.wisdom = 6
+        self.intellect = 3
+        self.dexterity = 23
+        self.strength = 17
+        self.health = self.stamina*10
+        self.shield = 0
+        self.damage = 0
+        self.bleed = 0
+        self.miss = 100/self.dexterity
+        self.crit = self.dexterity/1.5
+        self.dict = ['SLICES','WOUNDS','HITS','GLANCES','DEMOLISHES','CRITS','MISSES']
+        self.target = 'unknown'
+        self.abilities = ['Daring Strike(1), Puncture(2)']
+        self.xp = 0
+        self.lvl = 1
+    def f_displayStats(self):
+        print "Class: ", self.cls, "\nName: ", self.name, "\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
+    def f_abilities(self):
+		print "Daring Strike(1). Deals {0} to {1} damage.".format(self.dexterity+self.strength,(self.dexterity+self.strength)*5)
+		print "Deals bonus damage to bleeding enemies."
+		print "Puncture(2). Deals {0} to {1} damage.".format((self.dexterity+self.strength),(self.dexterity+self.strength)*2)
+		print "Causes the enemy to bleed."
+		print "Shank(3). Deals {0} to {1} damage.".format(1,self.dexterity*5)
+		print "Has a high crit chance and on critical hit causes the enemy to bleed."
+		drawText('(1): Daring Strike, Deals '+str(self.dexterity+self.strength)+' to '+str((self.dexterity+self.strength)*5)+' damage. Incresed by Dexterity and Strength.',font,windowSurface,100,30,TEXTCOLOR)
+		drawText('Deals bonus damage to bleeding enemies.',font,windowSurface,100,60,TEXTCOLOR)
+		drawText('(2): Puncture Deals '+str(self.dexterity+self.strength)+' to '+str((self.dexterity+self.strength)*2)+' damage. Incresed by Dexterity and Strength.',font,windowSurface,100,90,TEXTCOLOR)
+		drawText('Causes the enemy to bleed.',font,windowSurface,100,120,TEXTCOLOR)
+		drawText('(3): Shank Deals '+str(1)+' to '+str(self.dexterity*5)+' damage. Incresed by Dexterity.',font,windowSurface,100,150,TEXTCOLOR)
+		drawText('Has a high crit chance and on critical hit caues the enemy to bleed.',font,windowSurface,100,180,TEXTCOLOR)
+
+    def f_ability0(self):
+    	damage = random.randrange(self.dexterity, self.dexterity*5)+self.strength
+    	crit = random.randrange(1,100)
+        miss = random.randrange(1,100)
+        if self.bleed:
+        	damage += 20*self.lvl
+    	if miss <= self.miss:
+            self.damage = 0
+            print "You MISS completely!"
+            drawText('You MISS completly!',font,windowSurface,100,0,TEXTCOLOR)
+        elif crit <= self.crit:
+            self.damage = damage*2.5
+            print "Your Daring Strike CRITS for {0} damage!".format(self.damage)
+            drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    	else:
+    		self.damage = damage
+    		print "Your Daring Strike hits for {0} damage.".format(self.damage)
+    		drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    	self.f_bleed()
+    	
+    def f_ability1(self):
+    	damage = random.randrange((self.dexterity+self.strength),(self.dexterity+self.strength)*2)
+    	crit = random.randrange(1,100)
+        miss = random.randrange(1,100)
+    	if miss <= self.miss:
+            self.damage = 0
+            print "You MISS completely!"
+            drawText('You MISS completly!',font,windowSurface,100,0,TEXTCOLOR)
+        elif crit <= self.crit:
+            self.damage = damage*1.5
+            self.bleed += 3
+            print "Your Puncture CRITS for {0} damage!".format(self.damage)
+            drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    	else:
+    		self.damage = damage
+    		self.bleed += 2
+    		print "Your Puncture hits for {0} damage.".format(self.damage)
+    		drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    	self.f_bleed()
+    	
+    def f_ability2(self):
+    	damage = random.randrange(1,self.dexterity*5)
+    	crit = random.randrange(1,50)
+    	miss = random.randrange(1,100)
+    	if miss <= self.miss:
+    		self.damage = 0
+    		print "You MISS completely!"
+    	elif crit <= self.crit:
+    		self.damage = damage*3
+    		self.bleed += 2
+    		print "Your Shank CRITS for {0} damage!".format(self.damage)
+    		print "The enemy is bleeding."
+    		drawText('You CRIT for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    		drawText('Your enemy bleeds.',font,windowSurface,100,30,TEXTCOLOR)
+    	else:
+    		self.damage = damage
+    		print "Your Shank hits for {0} damage.".format(self.damage)
+    		drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    	self.f_bleed()
+    	
+    def f_bleed(self):
+    	if self.bleed:
+    		bleed_damage = (self.lvl*10)*self.bleed
+    		self.damage += bleed_damage
+    		self.bleed -= 1
+    		print "Your enemy's wounds bleed for {0} damage.".format(bleed_damage)
+    		drawText("Your enemy's wounds bleed for "+str(bleed_damage),font,windowSurface,100,90,TEXTCOLOR)
+    	
+    def f_health(self):
+        print "You have {0} health remaining".format(self.health)
+    def f_level(self):
+        self.stamina += 4
+        self.wisdom += 1
+        self.intellect += 1
+        self.dexterity += 7
+        self.strength += 3
+        self.bleed = 0
+        self.health = self.stamina*10
+        self.miss = 100/self.dexterity
+        self.crit = self.dexterity/1.5
+        self.lvl += 1
+        print "\nYou've reached level {0}".format(self.lvl)
+        drawText('You reached level '+str(lvl),font,windowSurface,0,0,TEXTCOLOR)
+    def f_sword(self):
+        self.dexterity += 30
+    def f_offhand(self):
+        self.dexterity += 15
+    def f_belt(self):
+        self.stamina += 2
+    def f_cloak(self):
+        self.stamina += 20
+    def f_trinket(self):
+        self.dexterity += 95
+    def f_legendary_weapon(self):
+        self.dexterity += 200
+    def f_eye(self):
+        self.stamina += 50
+
 
 class warlock:
     def __init__(self,name):
