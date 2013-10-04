@@ -28,7 +28,7 @@ def level_up(player):
     stats = 5
     for i in range(5):
         plus.append(plus_sign())
-        plus[i][1].topleft = (300,150+(i*17))
+        plus[i][1].topleft = (350,150+(i*17))
         windowSurface.blit(plus[i][0],plus[i][1])
     pygame.display.update()
     while stats != 0:
@@ -44,11 +44,11 @@ def level_up(player):
             windowSurface.blit(plus[i][0],plus[i][1])
             i += 1
          drawText('You are now lvl '+str(player[2].lvl)+'.  Please place 5 stats wherever you like.',font,windowSurface,200,125,TEXTCOLOR)
-         drawText('Stamina: '+str(player[2].stamina),font,windowSurface,320,150,TEXTCOLOR)
-         drawText('Wisdom: '+str(player[2].wisdom),font,windowSurface,320,167,TEXTCOLOR)
-         drawText('Intellect: '+str(player[2].intellect),font,windowSurface,320,184,TEXTCOLOR)
-         drawText('Dexterity: '+str(player[2].dexterity),font,windowSurface,320,201,TEXTCOLOR)
-         drawText('Strength: '+str(player[2].strength),font,windowSurface,320,218,TEXTCOLOR)
+         drawText('Stamina: '+str(player[2].stamina),font,windowSurface,375,150,TEXTCOLOR)
+         drawText('Wisdom: '+str(player[2].wisdom),font,windowSurface,375,167,TEXTCOLOR)
+         drawText('Intellect: '+str(player[2].intellect),font,windowSurface,375,184,TEXTCOLOR)
+         drawText('Dexterity: '+str(player[2].dexterity),font,windowSurface,375,201,TEXTCOLOR)
+         drawText('Strength: '+str(player[2].strength),font,windowSurface,375,218,TEXTCOLOR)
          pygame.display.update()
          pressed = pygame.mouse.get_pressed()
          if pressed[0] == True:
@@ -75,11 +75,11 @@ def level_up(player):
                 windowSurface.blit(plus[j][0],plus[j][1])
                 j += 1
              drawText('You are now lvl '+str(player[2].lvl)+'.  Please place 5 stats wherever you like.',font,windowSurface,200,125,TEXTCOLOR)
-             drawText('Stamina: '+str(player[2].stamina),font,windowSurface,320,150,TEXTCOLOR)
-             drawText('Wisdom: '+str(player[2].wisdom),font,windowSurface,320,167,TEXTCOLOR)
-             drawText('Intellect: '+str(player[2].intellect),font,windowSurface,320,184,TEXTCOLOR)
-             drawText('Dexterity: '+str(player[2].dexterity),font,windowSurface,320,201,TEXTCOLOR)
-             drawText('Strength: '+str(player[2].strength),font,windowSurface,320,218,TEXTCOLOR)
+             drawText('Stamina: '+str(player[2].stamina),font,windowSurface,375,150,TEXTCOLOR)
+             drawText('Wisdom: '+str(player[2].wisdom),font,windowSurface,375,167,TEXTCOLOR)
+             drawText('Intellect: '+str(player[2].intellect),font,windowSurface,375,184,TEXTCOLOR)
+             drawText('Dexterity: '+str(player[2].dexterity),font,windowSurface,375,201,TEXTCOLOR)
+             drawText('Strength: '+str(player[2].strength),font,windowSurface,375,218,TEXTCOLOR)
              pygame.display.update()
              player[2].health = player[2].stamina*10
          pygame.event.set_grab(False)
