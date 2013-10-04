@@ -192,6 +192,7 @@ def alt_mage():
     return data
 
 def mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack):
+    enemy = enemy_place
     minion = mage_minion()
     min_attack = True
     for i in range(6):
@@ -210,6 +211,7 @@ def mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_
             mainClock.tick(10)
     
 def abilityone(ability1,place,enemy_place,plyr,enemy,player,en_attack,min_attack):
+    enemy = enemy_place
     for i in range(6):
         if player[2].cls == 'mage':
             mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
@@ -225,8 +227,23 @@ def abilityone(ability1,place,enemy_place,plyr,enemy,player,en_attack,min_attack
             windowSurface.blit(ability1[0], ability1[1])
         pygame.display.update()
         mainClock.tick(10)
-        #time.sleep(0.1)
-
+  
+def default_attack(place,enemy_place,plyr,player,en_attack,min_attack):
+    enemy = enemy_place
+    for i in range(6):
+        plyr[1].topleft = (200+(i*50),400)
+        if player[2].cls == 'mage':
+            mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)  
+        elif player[2].cls == 'warrior':
+            warrior_battle(place,enemy_place,plyr,enemy,player,en_attack)
+        elif player[2].cls == 'cleric':
+            cleric_battle(place,enemy_place,plyr,enemy,player,en_attack)
+        elif player[2].cls == 'warlock':
+            warlock_battle(place,enemy_place,plyr,enemy,player,en_attack)
+        pygame.display.update()
+        mainClock.tick(10)
+    plyr[1].topleft = (200,400)
+    
 def enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack):
     enemy = enemy_place
     en_attack = True
@@ -273,7 +290,6 @@ def playerHasHitEnemy(playerRect, the_enemies):
 def drawText(text, font, surface, x, y, color):
     textobj = font.render(text, 1, color)
     textrect = textobj.get_rect()
-    #print textrect
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
 
@@ -385,6 +401,10 @@ def battle(place,player,enemy):
                     if player[2].cls == 'cleric':
                         holyblow = cleric_holyblow()
                         abilityone(holyblow,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                    if player[2].cls == 'warrior':
+                        default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
+                    if player[2].cls == 'warlock':
+                        default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                     player[2].f_ability0()
                     enemy[2].f_ability0()
