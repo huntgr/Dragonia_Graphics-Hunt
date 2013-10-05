@@ -24,6 +24,7 @@ class swashbuckler:
     def __init__(self,name):
         self.cls = 'swashbuckler'
         self.dead = 0
+        self.health_pot = 1
         self.name = name
         self.stamina = 15
         self.wisdom = 6
@@ -34,6 +35,7 @@ class swashbuckler:
         self.shield = 0
         self.damage = 0
         self.bleed = 0
+        self.dodge = False
         self.miss = 100/self.dexterity
         self.crit = self.dexterity/1.5
         self.dict = ['SLICES','WOUNDS','HITS','GLANCES','DEMOLISHES','CRITS','MISSES']
@@ -61,6 +63,11 @@ class swashbuckler:
     	damage = random.randrange(self.dexterity, self.dexterity*5)+self.strength
     	crit = random.randrange(1,100)
         miss = random.randrange(1,100)
+        dodge = random.randint(0,100)
+        if dodge <= self.dexterity/2:
+            self.dodge = True
+        else:
+            self.dodge = False
         if self.bleed:
         	damage += 20*self.lvl
     	if miss <= self.miss:
@@ -81,6 +88,11 @@ class swashbuckler:
     	damage = random.randrange((self.dexterity+self.strength),(self.dexterity+self.strength)*2)
     	crit = random.randrange(1,100)
         miss = random.randrange(1,100)
+        dodge = random.randint(0,100)
+        if dodge <= self.dexterity/2:
+            self.dodge = True
+        else:
+            self.dodge = False
     	if miss <= self.miss:
             self.damage = 0
             print "You MISS completely!"
@@ -101,6 +113,11 @@ class swashbuckler:
     	damage = random.randrange(1,self.dexterity*5)
     	crit = random.randrange(1,50)
     	miss = random.randrange(1,100)
+    	dodge = random.randint(0,100)
+        if dodge <= self.dexterity/2:
+            self.dodge = True
+        else:
+            self.dodge = False
     	if miss <= self.miss:
     		self.damage = 0
     		print "You MISS completely!"
@@ -146,20 +163,24 @@ class swashbuckler:
         self.dexterity += 15
     def f_belt(self):
         self.stamina += 2
+        self.health += 20
     def f_cloak(self):
         self.stamina += 20
+        self.health += 200
     def f_trinket(self):
         self.dexterity += 95
     def f_legendary_weapon(self):
         self.dexterity += 200
     def f_eye(self):
         self.stamina += 50
+        self.health += 500
 
 
 class warlock:
     def __init__(self,name):
         self.cls = 'warlock'
         self.dead = 0
+        self.health_pot = 1
         self.name = name
         self.stamina = 14
         self.wisdom = 15
@@ -300,6 +321,7 @@ class mage:
     def __init__(self,name):
         self.cls = 'mage'
         self.dead = 0
+        self.health_pot = 1
         self.name = name
         self.stamina = 8
         self.wisdom = 19
@@ -426,6 +448,7 @@ class warrior:
     def __init__(self,name):
         self.cls = 'warrior'
         self.dead = 0
+        self.health_pot = 1
         self.name = name
         self.stamina = 17
         self.wisdom = 7
@@ -559,6 +582,7 @@ class cleric:
     def __init__(self,name):
         self.cls = 'cleric'
         self.dead = 0
+        self.health_pot = 1
         self.name = name
         self.stamina = 15
         self.wisdom = 10

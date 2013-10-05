@@ -19,6 +19,53 @@ def drawText(text, font, surface, x, y, color):
     #print textrect
     textrect.topleft = (x, y)
     surface.blit(textobj, textrect)
+
+#working on adding
+class zombie:
+    def __init__(self):
+        self.name = 'zombie'
+        self.health = 800
+        self.stamina = 80
+        self.damage = 0
+        self.miss = 20
+        self.last = -1
+        self.dict = ['SMASHES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
+        self.target = 'unknown'
+        self.xp = 175
+    def f_ability0(self):
+        ability = random.randrange(0,2)
+        if ability == 0:
+            damage = random.randrange(70,100)
+            self.last = 0
+            dam = str(damage)
+            drawText('The cyclops smashes you with his fist',font,windowSurface,TEXT,0,TEXTCOLOR)
+            print "The cyclops smashes you with his fist"
+        elif ability == 1:
+            damage = 0
+            self.last = 1
+            self.damage = 0
+            dam = str(damage)
+            drawText('The cyclops is disoriented.',font,windowSurface,TEXT,0,TEXTCOLOR)
+            print "The cyclops is disoriented and just looks at you funny"
+        crit = random.randrange(1,10)
+        miss = random.randrange(1,100)
+        if miss <= self.miss and ability != 1:
+            self.damage = 0
+            drawText('The cyclops MISSES you completely!',font,windowSurface,TEXT,25,TEXTCOLOR)
+            print "The cyclops MISSES you completely!"
+        elif crit >=9 and ability != 1:
+            crit = damage*2
+            self.damage = crit
+            dam = str(crit)
+            drawText('The cyclops CRITS you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
+            print "The cyclops CRITS you for {0} damage".format(self.damage)
+        else:
+            if ability != 1:
+                self.damage = damage
+                dam = str(self.damage)
+                drawText('The cyclops hits you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
+                print "The cyclops {0} for {1} damage".format(self.dict[random.randrange(0,6)],self.damage)
+                
 class cyclops:
     def __init__(self):
         self.name = 'cyclops'

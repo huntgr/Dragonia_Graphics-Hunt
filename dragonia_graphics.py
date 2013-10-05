@@ -93,7 +93,16 @@ def damage(enemy,player,alive):
         else:
             player.shield -= enemy.damage
             enemy.damage = 0
-    player.health -= enemy.damage
+    if player.cls == 'swashbuckler':
+        if player.dodge == True:
+            fnt = pygame.font.SysFont('centaur', 22)
+            drawText('You DODGED the enemies attack.',fnt,windowSurface,0,25,TEXTCOLOR)
+            pygame.display.update()
+            #mainClock.tick(3)
+        else:
+            player.health -= enemy.damage
+    else:
+        player.health -= enemy.damage
     if enemy.health <= 0 and player.health > 0:
          player.health = player.health + enemy.stamina*2
          if player.health > (player.stamina*10):
@@ -491,8 +500,11 @@ def battle(place,player,enemy):
                     pygame.display.update()
                     time.sleep(1)
                 
-                if event.key == ord('4'):
-                    drawText('Ability Not Available Yet!',font,windowSurface,0,0,TEXTCOLOR)
+                if event.key == ord('q'):
+                    if player[2].health_pot >= 1:
+                        player[2].health_pot -= 1
+                        player[2].health = player[2].stamina*10
+                        drawText('You healed to full!', font, windowSurface, 0, 0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
                     
@@ -533,8 +545,13 @@ def pick_enemy(enemies):
     data = [enemyImage,enemyRect,enemyType]
     return data
 
-def all_enemies(enemies,locations):
-    rand = random.randint(10,23)
+def all_enemies(enemies,locations,difficulty):
+    if difficulty == 1:
+        rand = random.randint(4,8)
+    elif difficulty == 2:
+        rand = random.randint(9,15)
+    elif difficulty == 3:
+        rand = random.randint(16,23)
     all_enemies = []
     x = 0
     while x != rand:
@@ -544,6 +561,27 @@ def all_enemies(enemies,locations):
         locations.remove(locations[loc])
         x += 1
     return all_enemies
+
+def choose_difficulty():
+    windowSurface.blit(dragonia[0],dragonia[1])
+    drawText('Please Choose your difficulty',font,windowSurface,300,0,(0,0,0))
+    drawText('Beginner(1)',font,windowSurface,300,25,(0,0,0))
+    drawText('Normal(2)',font,windowSurface,300,50,(0,0,0))
+    drawText('Expert(3)',font,windowSurface,300,75,(0,0,0))
+    pygame.display.update()
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                terminate()
+            if event.type == KEYUP:
+                if event.key == K_ESCAPE:
+                    terminate()   
+                if event.key == ord('1'):
+                    return 1
+                if event.key == ord('2'):
+                    return 2
+                if event.key == ord('3'):
+                    return 3
 
 def pick_hero(heroes):
     pygame.display.update()
@@ -784,7 +822,7 @@ def loot(enemy):
         else:
             dropped = False
     if dropped == False:
-        lootImage = pygame.image.load('sword.png')
+        lootImage = pygame.image.load('sword_dragonia.png')
         lootRect = lootImage.get_rect()
         data = [lootImage,lootRect,False,'Nothing']
     return data
@@ -810,7 +848,7 @@ enemies = ['ogre.png','snake.png','garg_dragonia_small.png','dragon.png','cyclop
 #set up load screen
 dragonia = dragonia()
 #test
-the_enemies = all_enemies(enemies,locations)
+#the_enemies = all_enemies(enemies,locations)
 #topScore = 0
 while True:
     # set up the start of the game
@@ -824,8 +862,9 @@ while True:
     windowSurface.blit(dragonia[0],dragonia[1])
     player = pick_hero(heroes)
     player[1].topleft = (0,20)
+    difficulty = choose_difficulty()
     class_abilities(player)
-    the_enemies = all_enemies(enemies,locations)
+    the_enemies = all_enemies(enemies,locations,difficulty)
     you_win = False
     leveled = False
     while True: # the game loop runs while the game part is playing
