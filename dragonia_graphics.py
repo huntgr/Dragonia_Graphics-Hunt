@@ -403,6 +403,7 @@ def battle(place,player,enemy):
     enemy_place[0] = pygame.transform.scale(enemy[0],(300,330))
     en_attack = False
     min_attack = False
+    flag = False
     while alive[2] == True:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -448,8 +449,13 @@ def battle(place,player,enemy):
                     if player[2].cls == 'cleric':
                         empower = cleric_empowerment()
                         empower[1].topleft = (150,350)
-                        player[2].empowered = 1
-                        enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
+                        if player[2].empowered == 1:
+                            flag = True
+                        else:
+                            player[2].empowered = 1
+                        enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)
+                        if flag != True:
+                            player[2].empowered = 0
                         player[2].f_ability1()
                         enemy[2].f_ability0()
                         alive = damage(enemy[2],player[2],alive)
@@ -504,7 +510,9 @@ def battle(place,player,enemy):
                     if player[2].health_pot >= 1:
                         player[2].health_pot -= 1
                         player[2].health = player[2].stamina*10
-                        drawText('You healed to full!', font, windowSurface, 0, 0,(0,0,0))
+                        drawText('You healed to full!', font, windowSurface, 0, 0,(255,255,255))
+                    else:
+                        drawText('You have no potinos left.',font,windowSurface,0,0,(255,255,255))
                     pygame.display.update()
                     time.sleep(1)
                     
@@ -513,7 +521,7 @@ def battle(place,player,enemy):
         elif player[2].cls == 'warrior':
             warrior_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'cleric':
-            cleric_battle(place,enemy_place,plyr,enemy,player,en_attackv)
+            cleric_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'warlock':
             warlock_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'swashbuckler':
@@ -926,7 +934,11 @@ while True:
         j = 0
         while j!= len(the_enemies):
             if player[2].lvl > 1 and leveled == True:
-                the_enemies[j][2].health += player[2].lvl*50
+                the_enemies[j][2].health += player[2].lvl*25*difficulty
+                if difficulty == 2:
+                    the_enemies[j][2].mod = 1.15
+                elif difficulty == 3:
+                    the_enemies[j][2].mod = 1.25
                 the_enemies[j][2].miss -= 1
             enemy_health(the_enemies[j][2].health,the_enemies[j])
             j += 1

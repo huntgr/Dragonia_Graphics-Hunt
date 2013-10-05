@@ -29,6 +29,7 @@ class zombie:
         self.damage = 0
         self.miss = 20
         self.last = -1
+        self.mod = 1
         self.dict = ['SMASHES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
         self.target = 'unknown'
         self.xp = 175
@@ -74,13 +75,14 @@ class cyclops:
         self.damage = 0
         self.miss = 10
         self.last = -1
+        self.mod = 1
         self.dict = ['SMASHES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
         self.target = 'unknown'
         self.xp = 175
     def f_ability0(self):
         ability = random.randrange(0,2)
         if ability == 0:
-            damage = random.randrange(70,100)
+            damage = random.randrange(70,100)*self.mod
             self.last = 0
             dam = str(damage)
             drawText('The cyclops smashes you with his fist',font,windowSurface,TEXT,0,TEXTCOLOR)
@@ -149,6 +151,7 @@ class ogre:
         self.damage = 0
         self.miss = 10
         self.last = -1
+        self.mod = 1
         self.dict = ['SMASHES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
         self.target = 'unknown'
         self.xp = 75
@@ -158,13 +161,13 @@ class ogre:
         ability = random.randrange(0,2)
         if ability == 0 or self.last == 1:
             if self.last == 1:
-                damage = random.randrange(17,30)*3
+                damage = (random.randrange(17,30)*3)*self.mod
                 miss = self.miss + 1
                 self.last = 0
                 drawText('The ogre smashes you to the ground ',font,windowSurface,TEXT,0,TEXTCOLOR)
                 print "The Ogre smashes you to the ground with full force!"
             else:
-                damage = random.randrange(17,30)
+                damage = random.randrange(17,30)*self.mod
                 drawText('The ogre stakes a swing with his club!',font,windowSurface,TEXT,0,TEXTCOLOR)
                 print "The Ogre takes a swing with his club!"
                 self.last = 0
@@ -175,7 +178,7 @@ class ogre:
             drawText('The ogre picks you up!',font,windowSurface,450,0,TEXTCOLOR)
             print "The ogre picks you up and prepares to slam you to the ground"
         else:
-            damage = random.randrange(17,30)
+            damage = random.randrange(17,30)*self.mod
             dam = str(damage)
             drawText('The ogre takes a swing with his club',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Ogre takes a swing with his club!"
@@ -230,6 +233,7 @@ class gargoyle:
         self.damage = 0
         self.miss = 10
         self.last = -1
+        self.mod = 1
         self.dict = ['DECIMATES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
         self.target = 'unknown'
         self.xp = 150
@@ -238,7 +242,7 @@ class gargoyle:
         miss = random.randrange(1,100)
         ability = random.randrange(0,2)
         if ability == 0:
-            damage = random.randrange(30,45)
+            damage = random.randrange(30,45)*self.mod
             dam = str(damage)
             drawText('The Gargoyle swipes you with his fierce claws!',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Gargoyle swipes you with his fierce claws!"
@@ -252,7 +256,7 @@ class gargoyle:
             drawText('The Gargoyle turns to stone, increasing health by 50',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The gargoyle turns to stone, increasing his health by 50"
         else:
-            damage = random.randrange(30,45)
+            damage = random.randrange(30,45)*self.mod
             print "The Gargoyle swipes you with his fierce claws!"
         if miss <= self.miss and ability != 1:
             self.damage = 0
@@ -298,6 +302,7 @@ class dragon:
         self.damage = 0
         self.miss = 10
         self.last = -1
+        self.mod = 1
         self.dict = ['HITS','BITES','BURNS','DEVOURES','BREATHES FIRE','CRITS','MISSES']
         self.target = 'unknown'
         self.xp = 1000
@@ -307,14 +312,14 @@ class dragon:
         ability = random.randrange(0,2)
         if ability == 0:
             if self.last == 1:
-                damage = random.randrange(10,80)*2
+                damage = (random.randrange(10,80)*2)*self.mod
                 drawText('The tar ignites and you are engulfed in flames!',font,windowSurface,TEXT,0,TEXTCOLOR)
                 print "The tar ignites and you are engulfed in flames!"
             else:
-                damage = random.randrange(10,80)
+                damage = random.randrange(10,80)*self.mod
                 drawText('The Dragon attacks you!',font,windowSurface,TEXT,0,TEXTCOLOR)
                 print "The Dragon attacks you!"
-            last = 0
+            self.last = 0
         elif ability == 1 and self.last !=1:
             damage = 0
             self.last = 1
@@ -322,7 +327,7 @@ class dragon:
             drawText('The Dragon spews tar all over your body...un oh',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Dragon spews tar all over your body...un oh"
         else:
-            damage = random.randrange(10,80)
+            damage = random.randrange(10,80)*self.mod
             drawText('The Dragon attacks you for '+str(damage),font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Dragon attacks you!"
         if miss <= self.miss and ability != 1:
@@ -397,6 +402,7 @@ class giant_snake:
         self.miss = 10
         self.last = -1
         self.counter = 2
+        self.mod = 1
         self.dict = ['HITS','BITES','KNICKS','DEVOURES','POISONS','CRITS','MISSES']
         self.target = 'unknown'
         self.xp = 65
@@ -405,15 +411,15 @@ class giant_snake:
         miss = random.randrange(1,100)
         ability = random.randrange(0,2)
         if ability == 0 or self.last == 1:
-            if self.last == 1 and self.counter > 1:
-                damage = random.randrange(17,30) + 10
+            if self.counter > 1:
+                damage = (random.randrange(17,30) + 10)*self.mod
                 drawText('The Giant Snake attacks! His poison does an additional 10 damage.',font,windowSurface,300,0,TEXTCOLOR)
                 print "The Giant Snake attacks! His poison does an additional 10 damage."
                 self.counter -= 1
                 if self.counter == 0:
                     self.counter = 2
             else:
-                damage = random.randrange(17,30)
+                damage = random.randrange(17,30)*self.mod
                 drawText('The Giant Snake attacks!',font,windowSurface,TEXT,0,TEXTCOLOR)
                 print "The Giant Snake attacks!"
             self.last = 0
@@ -424,7 +430,7 @@ class giant_snake:
             drawText('The Giant Snake injects you with poison.',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Giant Snake injects you with poison"
         else:
-            damage = random.randrange(17,30)
+            damage = random.randrange(17,30)*self.mod
             drawText('The Giant Snake attacks!',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Giant Snake attacks!"
         if miss <= self.miss and self.last == 0:
