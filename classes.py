@@ -174,6 +174,14 @@ class swashbuckler:
     def f_eye(self):
         self.stamina += 50
         self.health += 500
+    def f_air(self):
+        self.dexterity += 2
+    def f_earth(self):
+        self.strength += 2
+    def f_water(self):
+        self.wisdom += 2
+    def f_fire(self):
+        self.intellect += 2
 
 
 class warlock:
@@ -316,6 +324,14 @@ class warlock:
         self.intellect += 45
     def f_legendary_weapon(self):
         self.intellect += 100
+    def f_air(self):
+        self.dexterity += 2
+    def f_earth(self):
+        self.strength += 2
+    def f_water(self):
+        self.wisdom += 2
+    def f_fire(self):
+        self.intellect += 2
 
 class mage:
     def __init__(self,name):
@@ -443,6 +459,14 @@ class mage:
     def f_eye(self):
         self.stamina += 50
         self.health += 500
+    def f_air(self):
+        self.dexterity += 2
+    def f_earth(self):
+        self.strength += 2
+    def f_water(self):
+        self.wisdom += 2
+    def f_fire(self):
+        self.intellect += 2
             
 class warrior:
     def __init__(self,name):
@@ -507,6 +531,7 @@ class warrior:
             print 'Your Heroic Slash {0} for {1} damage.'.format(self.dict[random.randrange(0,5)],self.damage)
     
     def f_ability1(self):
+        self.damage = 0
     	self.tactics = 3
         drawText('Your prepare yourself for battle!',font,windowSurface,0,0,TEXTCOLOR)
     	print "You prepare your self for battle!"
@@ -577,6 +602,14 @@ class warrior:
     def f_eye(self):
         self.stamina += 50
         self.health += 500
+    def f_air(self):
+        self.dexterity += 2
+    def f_earth(self):
+        self.strength += 2
+    def f_water(self):
+        self.wisdom += 2
+    def f_fire(self):
+        self.intellect += 2
 
 class cleric:
     def __init__(self,name):
@@ -723,3 +756,11 @@ class cleric:
     def f_eye(self):
         self.stamina += 50
         self.health += 500
+    def f_air(self):
+        self.dexterity += 2
+    def f_earth(self):
+        self.strength += 2
+    def f_water(self):
+        self.wisdom += 2
+    def f_fire(self):
+        self.intellect += 2

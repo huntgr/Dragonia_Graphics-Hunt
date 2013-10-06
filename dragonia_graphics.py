@@ -710,6 +710,26 @@ def loot(enemy):
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
             dropped = True
+        elif rand >= 35 and rand < 53:
+            lootImage = pygame.image.load('air_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'air']
+            dropped = True
+        elif rand >= 53 and rand < 70:
+            lootImage = pygame.image.load('earth_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'earth']
+            dropped = True
+        elif rand >= 70 and rand < 86:
+            lootImage = pygame.image.load('fire_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'fire']
+            dropped = True
+        elif rand >= 86 and rand <= 100:
+            lootImage = pygame.image.load('water_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'water']
+            dropped = True
         else:
             dropped = False
     elif enemy[2].name == 'snake':
@@ -737,6 +757,26 @@ def loot(enemy):
             lootImage = pygame.image.load('trinket_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
+            dropped = True
+        elif rand >= 30 and rand < 48:
+            lootImage = pygame.image.load('air_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'air']
+            dropped = True
+        elif rand >= 48 and rand < 66:
+            lootImage = pygame.image.load('fire_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'fire']
+            dropped = True
+        elif rand >= 66 and rand < 82:
+            lootImage = pygame.image.load('earth_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'earth']
+            dropped = True
+        elif rand >= 82 and rand <= 100:
+            lootImage = pygame.image.load('water_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'water']
             dropped = True
         else:
             dropped = False
@@ -766,6 +806,26 @@ def loot(enemy):
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
             dropped = True
+        elif rand >= 68 and rand < 76:
+            lootImage = pygame.image.load('air_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'air']
+            dropped = True
+        elif rand >= 76 and rand < 84:
+            lootImage = pygame.image.load('fire_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'fire']
+            dropped = True
+        elif rand >= 84 and rand < 92:
+            lootImage = pygame.image.load('water_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'water']
+            dropped = True
+        elif rand >= 92 and rand <= 100:
+            lootImage = pygame.image.load('earth_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'earth']
+            dropped = True
         else:
             dropped = False
     elif enemy[2].name == 'ogre':
@@ -793,6 +853,26 @@ def loot(enemy):
             lootImage = pygame.image.load('trinket_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
+            dropped = True
+        elif rand >= 31 and rand < 49:
+            lootImage = pygame.image.load('air_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'air']
+            dropped = True
+        elif rand >= 49 and rand < 67:
+            lootImage = pygame.image.load('water_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'water']
+            dropped = True
+        elif rand >= 67 and rand < 85:
+            lootImage = pygame.image.load('fire_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'fire']
+            dropped = True
+        elif rand >= 85 and rand <= 100:
+            lootImage = pygame.image.load('earth_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'earth']
             dropped = True
         else:
             dropped = False
@@ -826,6 +906,26 @@ def loot(enemy):
             lootImage = pygame.image.load('trinket_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
+            dropped = True
+        elif rand >= 65 and rand < 74:
+            lootImage = pygame.image.load('water_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'water']
+            dropped = True
+        elif rand >= 74 and rand < 83:
+            lootImage = pygame.image.load('fire_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'fire']
+            dropped = True
+        elif rand >= 83 and rand < 92:
+            lootImage = pygame.image.load('earth_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'earth']
+            dropped = True
+        elif rand >= 92 and rand <= 100:
+            lootImage = pygame.image.load('air_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'air']
             dropped = True
         else:
             dropped = False
@@ -935,8 +1035,8 @@ while True:
         while j!= len(the_enemies):
             if player[2].lvl > 1 and leveled == True:
                 the_enemies[j][2].health += player[2].lvl*25*difficulty
-                if difficulty == 2:
-                    the_enemies[j][2].mod = 1.15
+                if difficulty == 1:
+                    the_enemies[j][2].mod = 0.75
                 elif difficulty == 3:
                     the_enemies[j][2].mod = 1.25
                 the_enemies[j][2].miss -= 1
@@ -1000,6 +1100,34 @@ while True:
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey()
                     player[2].f_trinket()
+                if the_drop[3] == 'air':
+                    drawText('You found an Air Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
+                    pygame.display.update()
+                    moveLeft = moveRight = moveUp = moveDown = False
+                    waitForPlayerToPressKey()
+                    player[2].f_air()
+                if the_drop[3] == 'earth':
+                    drawText('You found an Earth Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
+                    pygame.display.update()
+                    moveLeft = moveRight = moveUp = moveDown = False
+                    waitForPlayerToPressKey()
+                    player[2].f_earth()
+                if the_drop[3] == 'fire':
+                    drawText('You found a Fire Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
+                    pygame.display.update()
+                    moveLeft = moveRight = moveUp = moveDown = False
+                    waitForPlayerToPressKey()
+                    player[2].f_fire()
+                if the_drop[3] == 'water':
+                    drawText('You found a Water Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
+                    pygame.display.update()
+                    moveLeft = moveRight = moveUp = moveDown = False
+                    waitForPlayerToPressKey()
+                    player[2].f_water()
         player_health(player[2].health,player,player[2].shield)
         pygame.display.update()
         if current_enemy != -1:
