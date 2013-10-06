@@ -25,7 +25,7 @@ def plus_sign():
 def level_up(player):
     font = pygame.font.SysFont('centaur', 20)
     plus = []
-    stats = 5
+    stats = 10
     for i in range(5):
         plus.append(plus_sign())
         plus[i][1].topleft = (350,150+(i*17))
@@ -43,7 +43,7 @@ def level_up(player):
          while i != 5:
             windowSurface.blit(plus[i][0],plus[i][1])
             i += 1
-         drawText('You are now lvl '+str(player[2].lvl)+'.  Please place 5 stats wherever you like.',font,windowSurface,200,125,TEXTCOLOR)
+         drawText('You are now lvl '+str(player[2].lvl)+'.  Please place 10 stats wherever you like.',font,windowSurface,200,125,TEXTCOLOR)
          drawText('Stamina: '+str(player[2].stamina),font,windowSurface,375,150,TEXTCOLOR)
          drawText('Wisdom: '+str(player[2].wisdom),font,windowSurface,375,167,TEXTCOLOR)
          drawText('Intellect: '+str(player[2].intellect),font,windowSurface,375,184,TEXTCOLOR)
@@ -74,7 +74,7 @@ def level_up(player):
              while j != 5:
                 windowSurface.blit(plus[j][0],plus[j][1])
                 j += 1
-             drawText('You are now lvl '+str(player[2].lvl)+'.  Please place 5 stats wherever you like.',font,windowSurface,200,125,TEXTCOLOR)
+             drawText('You are now lvl '+str(player[2].lvl)+'.  Please place 10 stats wherever you like.',font,windowSurface,200,125,TEXTCOLOR)
              drawText('Stamina: '+str(player[2].stamina),font,windowSurface,375,150,TEXTCOLOR)
              drawText('Wisdom: '+str(player[2].wisdom),font,windowSurface,375,167,TEXTCOLOR)
              drawText('Intellect: '+str(player[2].intellect),font,windowSurface,375,184,TEXTCOLOR)
@@ -512,7 +512,7 @@ def battle(place,player,enemy):
                         player[2].health = player[2].stamina*10
                         drawText('You healed to full!', font, windowSurface, 0, 0,(255,255,255))
                     else:
-                        drawText('You have no potinos left.',font,windowSurface,0,0,(255,255,255))
+                        drawText('You have no potions left.',font,windowSurface,0,0,(255,255,255))
                     pygame.display.update()
                     time.sleep(1)
                     
@@ -550,6 +550,8 @@ def pick_enemy(enemies):
         enemyType = dragon()
     elif rand == 4:
         enemyType = cyclops()
+    elif rand == 5:
+        enemyType = gargantuan()
     data = [enemyImage,enemyRect,enemyType]
     return data
 
@@ -950,7 +952,7 @@ pygame.mixer.music.load('background_.ogg')
 #enemy locations
 locations = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
 #enemy setup
-enemies = ['ogre.png','snake.png','garg_dragonia_small.png','dragon.png','cyclops.png']
+enemies = ['ogre.png','snake.png','garg_dragonia_small.png','dragon.png','cyclops_dragonia.png','gargantuan_dragonia.png']
 #enemy = pick_enemy(enemies)
 
 #set up load screen

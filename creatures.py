@@ -21,9 +21,9 @@ def drawText(text, font, surface, x, y, color):
     surface.blit(textobj, textrect)
 
 #working on adding
-class zombie:
+class gargantuan:
     def __init__(self):
-        self.name = 'zombie'
+        self.name = 'gargantuan'
         self.health = 800
         self.stamina = 80
         self.damage = 0
@@ -36,36 +36,35 @@ class zombie:
     def f_ability0(self):
         ability = random.randrange(0,2)
         if ability == 0:
-            damage = random.randrange(70,100)
+            damage = random.randrange(10,40)*self.mod
             self.last = 0
             dam = str(damage)
-            drawText('The cyclops smashes you with his fist',font,windowSurface,TEXT,0,TEXTCOLOR)
-            print "The cyclops smashes you with his fist"
+            drawText('The Gargantuan decimates you.',font,windowSurface,TEXT,0,TEXTCOLOR)
+            print "The Gargantuan smashes you with his fist"
         elif ability == 1:
-            damage = 0
+            damage = random.randrange(20,60)*self.mod
             self.last = 1
             self.damage = 0
             dam = str(damage)
-            drawText('The cyclops is disoriented.',font,windowSurface,TEXT,0,TEXTCOLOR)
-            print "The cyclops is disoriented and just looks at you funny"
+            drawText('The Gargantuan stomps on you.',font,windowSurface,TEXT,0,TEXTCOLOR)
+            print "The Gargantuan is disoriented and just looks at you funny"
         crit = random.randrange(1,10)
         miss = random.randrange(1,100)
-        if miss <= self.miss and ability != 1:
+        if miss <= self.miss:
             self.damage = 0
-            drawText('The cyclops MISSES you completely!',font,windowSurface,TEXT,25,TEXTCOLOR)
-            print "The cyclops MISSES you completely!"
-        elif crit >=9 and ability != 1:
+            drawText('The Gargantuan MISSES you completely!',font,windowSurface,TEXT,25,TEXTCOLOR)
+            print "The Gargantuan MISSES you completely!"
+        elif crit >=9:
             crit = damage*2
             self.damage = crit
             dam = str(crit)
-            drawText('The cyclops CRITS you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
-            print "The cyclops CRITS you for {0} damage".format(self.damage)
+            drawText('The Gargantuan CRITS you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
+            print "The Gargantuan CRITS you for {0} damage".format(self.damage)
         else:
-            if ability != 1:
-                self.damage = damage
-                dam = str(self.damage)
-                drawText('The cyclops hits you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
-                print "The cyclops {0} for {1} damage".format(self.dict[random.randrange(0,6)],self.damage)
+            self.damage = damage
+            dam = str(self.damage)
+            drawText('The Gargantuan hits you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
+            print "The Gargantuan {0} for {1} damage".format(self.dict[random.randrange(0,6)],self.damage)
                 
 class cyclops:
     def __init__(self):
@@ -401,7 +400,7 @@ class giant_snake:
         self.damage = 0
         self.miss = 10
         self.last = -1
-        self.counter = 2
+        self.counter = 0
         self.mod = 1
         self.dict = ['HITS','BITES','KNICKS','DEVOURES','POISONS','CRITS','MISSES']
         self.target = 'unknown'
@@ -411,7 +410,7 @@ class giant_snake:
         miss = random.randrange(1,100)
         ability = random.randrange(0,2)
         if ability == 0 or self.last == 1:
-            if self.counter > 1:
+            if self.counter >= 1:
                 damage = (random.randrange(17,30) + 10)*self.mod
                 drawText('The Giant Snake attacks! His poison does an additional 10 damage.',font,windowSurface,300,0,TEXTCOLOR)
                 print "The Giant Snake attacks! His poison does an additional 10 damage."
@@ -423,8 +422,9 @@ class giant_snake:
                 drawText('The Giant Snake attacks!',font,windowSurface,TEXT,0,TEXTCOLOR)
                 print "The Giant Snake attacks!"
             self.last = 0
-        elif ability == 1 and self.last !=1 and self.counter == 2:
+        elif ability == 1 and self.last != 1:
             damage = 0
+            self.counter = 2
             self.last = 1
             self.damage = 0
             drawText('The Giant Snake injects you with poison.',font,windowSurface,TEXT,0,TEXTCOLOR)
