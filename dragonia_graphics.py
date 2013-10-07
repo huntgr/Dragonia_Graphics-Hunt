@@ -96,7 +96,7 @@ def damage(enemy,player,alive):
     if player.cls == 'swashbuckler':
         if player.dodge == True:
             fnt = pygame.font.SysFont('centaur', 22)
-            drawText('You DODGED the enemies attack.',fnt,windowSurface,0,25,TEXTCOLOR)
+            drawText('You DODGED the enemies attack.',fnt,windowSurface,0,30,TEXTCOLOR)
             pygame.display.update()
             #mainClock.tick(3)
         else:

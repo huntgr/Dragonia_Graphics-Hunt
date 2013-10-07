@@ -24,7 +24,7 @@ class swashbuckler:
     def __init__(self,name):
         self.cls = 'swashbuckler'
         self.dead = 0
-        self.health_pot = 1
+        self.health_pot = 2
         self.name = name
         self.stamina = 15
         self.wisdom = 6
@@ -58,7 +58,9 @@ class swashbuckler:
 		drawText('Causes the enemy to bleed.',font,windowSurface,100,120,TEXTCOLOR)
 		drawText('(3): Shank Deals '+str(1)+' to '+str(self.dexterity*5)+' damage. Incresed by Dexterity.',font,windowSurface,100,150,TEXTCOLOR)
 		drawText('Has a high crit chance and on critical hit caues the enemy to bleed.',font,windowSurface,100,180,TEXTCOLOR)
-                drawText('(Q): Potions.  You have 1 potion that heals you to full.',font,windowSurface,100,210,TEXTCOLOR)
+                drawText('(Q): Potions.  You have 2 potions that heals you to full.',font,windowSurface,100,210,TEXTCOLOR)
+                drawText('     Using these does not cause the enemy to attack.',font,windowSurface,100,240,TEXTCOLOR)
+                drawText('(DODGE): The Swashbuckler has a chance to dodge.  This is directly related to his dexterity.',font,windowSurface,100,270,TEXTCOLOR)
     def f_ability0(self):
     	damage = random.randrange(self.dexterity, self.dexterity*5)+self.strength
     	crit = random.randrange(1,100)
@@ -73,15 +75,15 @@ class swashbuckler:
     	if miss <= self.miss:
             self.damage = 0
             print "You MISS completely!"
-            drawText('You MISS completly!',font,windowSurface,100,0,TEXTCOLOR)
+            drawText('You MISS completly!',font,windowSurface,0,0,TEXTCOLOR)
         elif crit <= self.crit:
             self.damage = damage*2.5
             print "Your Daring Strike CRITS for {0} damage!".format(self.damage)
-            drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+            drawText('You hit for '+str(self.damage),font,windowSurface,0,0,TEXTCOLOR)
     	else:
     		self.damage = damage
     		print "Your Daring Strike hits for {0} damage.".format(self.damage)
-    		drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    		drawText('You hit for '+str(self.damage),font,windowSurface,0,0,TEXTCOLOR)
     	self.f_bleed()
     	
     def f_ability1(self):
@@ -96,17 +98,17 @@ class swashbuckler:
     	if miss <= self.miss:
             self.damage = 0
             print "You MISS completely!"
-            drawText('You MISS completly!',font,windowSurface,100,0,TEXTCOLOR)
+            drawText('You MISS completly!',font,windowSurface,0,0,TEXTCOLOR)
         elif crit <= self.crit:
             self.damage = damage*1.5
             self.bleed += 3
             print "Your Puncture CRITS for {0} damage!".format(self.damage)
-            drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+            drawText('You hit for '+str(self.damage),font,windowSurface,0,0,TEXTCOLOR)
     	else:
     		self.damage = damage
     		self.bleed += 2
     		print "Your Puncture hits for {0} damage.".format(self.damage)
-    		drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    		drawText('You hit for '+str(self.damage),font,windowSurface,0,0,TEXTCOLOR)
     	self.f_bleed()
     	
     def f_ability2(self):
@@ -126,21 +128,21 @@ class swashbuckler:
     		self.bleed += 2
     		print "Your Shank CRITS for {0} damage!".format(self.damage)
     		print "The enemy is bleeding."
-    		drawText('You CRIT for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
-    		drawText('Your enemy bleeds.',font,windowSurface,100,30,TEXTCOLOR)
+    		drawText('You CRIT for '+str(self.damage),font,windowSurface,0,0,TEXTCOLOR)
+    		drawText('Your enemy bleeds.',font,windowSurface,0,60,TEXTCOLOR)
     	else:
     		self.damage = damage
     		print "Your Shank hits for {0} damage.".format(self.damage)
-    		drawText('You hit for '+str(self.damage),font,windowSurface,100,0,TEXTCOLOR)
+    		drawText('You hit for '+str(self.damage),font,windowSurface,0,0,TEXTCOLOR)
     	self.f_bleed()
     	
     def f_bleed(self):
-    	if self.bleed:
+    	if self.bleed > 0:
     		bleed_damage = (self.lvl*10)*self.bleed
     		self.damage += bleed_damage
     		self.bleed -= 1
     		print "Your enemy's wounds bleed for {0} damage.".format(bleed_damage)
-    		drawText("Your enemy's wounds bleed for "+str(bleed_damage),font,windowSurface,100,90,TEXTCOLOR)
+    		drawText("Your enemy's wounds bleed for "+str(bleed_damage),font,windowSurface,0,90,TEXTCOLOR)
     	
     def f_health(self):
         print "You have {0} health remaining".format(self.health)
@@ -188,7 +190,7 @@ class warlock:
     def __init__(self,name):
         self.cls = 'warlock'
         self.dead = 0
-        self.health_pot = 1
+        self.health_pot = 2
         self.name = name
         self.stamina = 14
         self.wisdom = 15
@@ -209,21 +211,22 @@ class warlock:
         print "Class: ", self.cls, "\nName: ", self.name,"\nLevel: ",self.lvl, "\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
     def f_abilities(self):
         font = pygame.font.SysFont('centaur', 20)
-        drawText('(1): Power Siphon. This ability does '+str((self.intellect+self.stamina*5/3))+' to '+str(((self.intellect+self.stamina)*8/3))+' damage.  It is increased by your Intellect and Stamina.',font,windowSurface,100,30,TEXTCOLOR)
+        drawText('(1): Power Siphon. This ability does '+str((self.intellect+self.stamina*4/3))+' to '+str(((self.intellect+self.stamina)*5/3))+' damage.  It is increased by your Intellect and Stamina.',font,windowSurface,100,30,TEXTCOLOR)
         drawText('     You are healed for a portion of the damage dealt.',font,windowSurface,100,60,TEXTCOLOR)
-        drawText('(2): Entropic Asault.  This ability does '+str((self.intellect+self.wisdom+self.stamina)*5/4)+' to '+str((self.intellect+self.wisdom+self.stamina)*9/2)+' damage. It is increased by Intellect and Stamina.',font,windowSurface,100,90,TEXTCOLOR)
+        drawText('(2): Entropic Asault.  This ability does '+str((self.intellect+self.wisdom+self.stamina)*5/4)+' to '+str((self.intellect+self.wisdom+self.stamina)*11/2)+' damage. It is increased by Intellect and Stamina.',font,windowSurface,100,90,TEXTCOLOR)
         drawText('     Consumes a portion of your current health.  Even if you miss.',font,windowSurface,100,120,TEXTCOLOR)
         drawText('(3): Blood Armor.  This ablity sacrifices '+str(self.health*0.1)+' to create a '+str(self.health*0.3)+' damage shield.',font,windowSurface,100,150,TEXTCOLOR)
         drawText('     Sacrifices 10% hp for shield 3x as strong.',font,windowSurface,100,180,TEXTCOLOR)
-        drawText('(Q): Potions.  You have 1 potion that heals you to full.',font,windowSurface,100,210,TEXTCOLOR)
-        print "Power Siphon(1).  This ability does {0} to {1} damage".format((self.intellect+self.stamina*5/3),((self.intellect+self.stamina)*8/3))
+        drawText('(Q): Potions.  You have 2 potions that heals you to full.',font,windowSurface,100,210,TEXTCOLOR)
+        drawText('     Using these does not cause the enemy to attack.',font,windowSurface,100,240,TEXTCOLOR)
+        print "Power Siphon(1).  This ability does {0} to {1} damage".format((self.intellect+self.stamina*4/3),((self.intellect+self.stamina)*5/3))
         print "Heals you for a portion of damage dealt\n"
-        print "Entropic Assault(2). This ability does {0} to {1} damage".format((self.intellect+self.wisdom+self.stamina)*5/4,(self.intellect+self.wisdom+self.stamina)*9/2)
+        print "Entropic Assault(2). This ability does {0} to {1} damage".format((self.intellect+self.wisdom+self.stamina)*5/4,(self.intellect+self.wisdom+self.stamina)*11/2)
         print "Consumes a portion of you current health. Even if you miss!\n"
         print "Blood Armor(3). This ability sacrafices {0} health to create a {1} damage shield.".format(self.health*0.1,self.health*0.3)
         print " "
     def f_ability0(self):
-        damage = random.randint(((self.intellect+self.stamina)*5/3),((self.intellect+self.stamina)*8/3))
+        damage = random.randint(((self.intellect+self.stamina)*4/3),((self.intellect+self.stamina)*5/3))
         crit = random.randrange(1,100)
         miss = random.randrange(1,100)
         if miss <= self.miss:
@@ -253,7 +256,7 @@ class warlock:
             print 'and heals you for {0}.'.format((damage/6)+heal_control)
             
     def f_ability1(self):
-        damage = random.randint((self.intellect+self.wisdom+self.stamina)*5/4,(self.intellect+self.wisdom+self.stamina)*9/2)
+        damage = random.randint((self.intellect+self.wisdom+self.stamina)*5/4,(self.intellect+self.wisdom+self.stamina)*11/2)
         crit = random.randrange(1,100)
         miss = random.randrange(1,100)
         sac_hp = round(self.health * (0.17),0)
@@ -338,7 +341,7 @@ class mage:
     def __init__(self,name):
         self.cls = 'mage'
         self.dead = 0
-        self.health_pot = 1
+        self.health_pot = 2
         self.name = name
         self.stamina = 8
         self.wisdom = 19
@@ -366,7 +369,8 @@ class mage:
         drawText('     The amount absorbed increases based on Intellect and Wisdom',font,windowSurface,100,90,TEXTCOLOR)
         drawText('(3): Summon Minion.  This ability summons a minion that attacks for 4 turns.',font,windowSurface,100,120,TEXTCOLOR)
         drawText('     Its damage is increased by your Intellect and Wisdom.',font,windowSurface,100,150,TEXTCOLOR)
-        drawText('(Q): Potions.  You have 1 potion that heals you to full.',font,windowSurface,100,180,TEXTCOLOR)
+        drawText('(Q): Potions.  You have 2 potions that heals you to full.',font,windowSurface,100,180,TEXTCOLOR)
+        drawText('     Using these does not cause the enemy to attack.',font,windowSurface,100,210,TEXTCOLOR)
         print "Fireball(1).  This ability does {0} to {1} damage.\n".format(self.intellect*2,self.intellect*7)
         print "Barrier(2). This ability creates a magical shield that absorbs {0} to {1} damage.".format(self.intellect+(self.wisdom/2),(self.intellect+(self.wisdom/2))*2)
         print " "
@@ -479,7 +483,7 @@ class warrior:
     def __init__(self,name):
         self.cls = 'warrior'
         self.dead = 0
-        self.health_pot = 1
+        self.health_pot = 2
         self.name = name
         self.stamina = 17
         self.wisdom = 7
@@ -505,7 +509,8 @@ class warrior:
         drawText('(2): Combat Tactics.  This ability boosts your damage output and crit chance for 3 turns.',font,windowSurface,100,60,TEXTCOLOR)
         drawText('(3): Furious Barrage.  Deals 3 swift strikes, dealing '+str(self.dexterity/2)+' to '+str((self.dexterity*2)+self.strength)+' damage.',font,windowSurface,100,90,TEXTCOLOR)
         drawText('     Its damage is increased by Dexterity and Strength',font,windowSurface,100,120,TEXTCOLOR)
-        drawText('(Q): Potions.  You have 1 potion that heals you to full.',font,windowSurface,100,150,TEXTCOLOR)
+        drawText('(Q): Potions.  You have 2 potions that heals you to full.',font,windowSurface,100,210,TEXTCOLOR)
+        drawText('     Using these does not cause the enemy to attack.',font,windowSurface,100,240,TEXTCOLOR)
         print "Heroic Slash(1).  This ability does {0} to {1} damage.\n".format(self.strength*2,self.strength*4)
         print "Combat Tactics(2). This ability boosts your damage output and crit chance for three turns."
         print "Furious Barrage(3). Deals three swift strikes dealing {0} to {1} damage.".format(self.dexterity/2,(self.dexterity*2)+self.strength)
@@ -623,7 +628,7 @@ class cleric:
     def __init__(self,name):
         self.cls = 'cleric'
         self.dead = 0
-        self.health_pot = 1
+        self.health_pot = 2
         self.name = name
         self.stamina = 15
         self.wisdom = 10
@@ -653,7 +658,8 @@ class cleric:
         drawText('          Divin Sagicity grants 1 Wisdom.',font,windowSurface,100,180,TEXTCOLOR)
         drawText('(3): Divine Sagicity. This ability deals damage equal to',font,windowSurface,100,210,TEXTCOLOR)
         drawText('     your Wisdom, heals you and increases your wisdom by 1 if Empowered.',font,windowSurface,100,240,TEXTCOLOR)
-        drawText('(Q): Potions.  You have 1 potion that heals you to full.',font,windowSurface,100,270,TEXTCOLOR)
+        drawText('(Q): Potions.  You have 2 potions that heals you to full.',font,windowSurface,100,270,TEXTCOLOR)
+        drawText('     Using these does not cause the enemy to attack.',font,windowSurface,100,300,TEXTCOLOR)
         print "Holy Blow(1).  This ability does {0} to {1} damage.\n".format((self.strength + self.intellect)*3,(self.strength + self.intellect)*4)
         print "Devine Judgment(2). This ability does {0} to {1} damage.".format(self.wisdom*2, self.wisdom*5)
         print "You enter a state of devine empowerment adding addition effects to your next attack."
