@@ -878,6 +878,59 @@ def loot(enemy):
             dropped = True
         else:
             dropped = False
+    elif enemy[2].name == 'gargantuan':
+        if rand >= 0 and rand < 35:
+            lootImage = pygame.image.load('sword_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'sword']
+            dropped = True
+        elif rand >= 35 and rand < 45:
+            lootImage = pygame.image.load('belt_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'belt']
+            dropped = True
+        elif rand >= 45 and rand < 52:
+            lootImage = pygame.image.load('cloak_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'cloak']
+            dropped = True
+        elif rand >= 52 and rand < 58:
+            lootImage = pygame.image.load('eye.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'eye']
+            dropped = True
+        elif rand >= 58 and rand < 60:
+            lootImage = pygame.image.load('legendary_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'legendary']
+            dropped = True
+        elif rand >=60 and rand < 65:
+            lootImage = pygame.image.load('trinket_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'trinket']
+            dropped = True
+        elif rand >= 65 and rand < 74:
+            lootImage = pygame.image.load('water_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'water']
+            dropped = True
+        elif rand >= 74 and rand < 83:
+            lootImage = pygame.image.load('fire_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'fire']
+            dropped = True
+        elif rand >= 83 and rand < 92:
+            lootImage = pygame.image.load('earth_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'earth']
+            dropped = True
+        elif rand >= 92 and rand <= 100:
+            lootImage = pygame.image.load('air_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'air']
+            dropped = True
+        else:
+            dropped = False
     elif enemy[2].name == 'cyclops':
         if rand >= 0 and rand < 35:
             lootImage = pygame.image.load('sword_dragonia.png')

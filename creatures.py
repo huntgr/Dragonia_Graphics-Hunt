@@ -36,13 +36,13 @@ class gargantuan:
     def f_ability0(self):
         ability = random.randrange(0,2)
         if ability == 0:
-            damage = random.randrange(10,40)*self.mod
+            damage = random.randint(10,60)*self.mod
             self.last = 0
             dam = str(damage)
             drawText('The Gargantuan decimates you.',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Gargantuan smashes you with his fist"
         elif ability == 1:
-            damage = random.randrange(20,60)*self.mod
+            damage = random.randint(20,70)*self.mod
             self.last = 1
             self.damage = 0
             dam = str(damage)

@@ -64,7 +64,7 @@ class swashbuckler:
     	crit = random.randrange(1,100)
         miss = random.randrange(1,100)
         dodge = random.randint(0,100)
-        if dodge <= self.dexterity/2:
+        if dodge <= self.dexterity/10:
             self.dodge = True
         else:
             self.dodge = False
@@ -209,21 +209,21 @@ class warlock:
         print "Class: ", self.cls, "\nName: ", self.name,"\nLevel: ",self.lvl, "\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
     def f_abilities(self):
         font = pygame.font.SysFont('centaur', 20)
-        drawText('(1): Power Siphon. This ability does '+str((self.intellect+self.stamina*3/2))+' to '+str(((self.intellect+self.stamina)*7/3))+' damage.  It is increased by your Intellect and Stamina.',font,windowSurface,100,30,TEXTCOLOR)
+        drawText('(1): Power Siphon. This ability does '+str((self.intellect+self.stamina*5/3))+' to '+str(((self.intellect+self.stamina)*8/3))+' damage.  It is increased by your Intellect and Stamina.',font,windowSurface,100,30,TEXTCOLOR)
         drawText('     You are healed for a portion of the damage dealt.',font,windowSurface,100,60,TEXTCOLOR)
-        drawText('(2): Entropic Asault.  This ability does '+str((self.intellect+self.wisdom+self.stamina)/2)+' to '+str((self.intellect+self.wisdom+self.stamina)*7/2)+' damage. It is increased by Intellect and Stamina.',font,windowSurface,100,90,TEXTCOLOR)
+        drawText('(2): Entropic Asault.  This ability does '+str((self.intellect+self.wisdom+self.stamina)*5/4)+' to '+str((self.intellect+self.wisdom+self.stamina)*9/2)+' damage. It is increased by Intellect and Stamina.',font,windowSurface,100,90,TEXTCOLOR)
         drawText('     Consumes a portion of your current health.  Even if you miss.',font,windowSurface,100,120,TEXTCOLOR)
         drawText('(3): Blood Armor.  This ablity sacrifices '+str(self.health*0.1)+' to create a '+str(self.health*0.3)+' damage shield.',font,windowSurface,100,150,TEXTCOLOR)
         drawText('     Sacrifices 10% hp for shield 3x as strong.',font,windowSurface,100,180,TEXTCOLOR)
         drawText('(Q): Potions.  You have 1 potion that heals you to full.',font,windowSurface,100,210,TEXTCOLOR)
-        print "Power Siphon(1).  This ability does {0} to {1} damage".format((self.intellect+self.stamina*3/2),((self.intellect+self.stamina)*7/3))
+        print "Power Siphon(1).  This ability does {0} to {1} damage".format((self.intellect+self.stamina*5/3),((self.intellect+self.stamina)*8/3))
         print "Heals you for a portion of damage dealt\n"
-        print "Entropic Assault(2). This ability does {0} to {1} damage".format((self.intellect+self.wisdom+self.stamina)/2,(self.intellect+self.wisdom+self.stamina)*7/2)
+        print "Entropic Assault(2). This ability does {0} to {1} damage".format((self.intellect+self.wisdom+self.stamina)*5/4,(self.intellect+self.wisdom+self.stamina)*9/2)
         print "Consumes a portion of you current health. Even if you miss!\n"
         print "Blood Armor(3). This ability sacrafices {0} health to create a {1} damage shield.".format(self.health*0.1,self.health*0.3)
         print " "
     def f_ability0(self):
-        damage = random.randrange(((self.intellect+self.stamina)*3/2),((self.intellect+self.stamina)*7/3))
+        damage = random.randint(((self.intellect+self.stamina)*5/3),((self.intellect+self.stamina)*8/3))
         crit = random.randrange(1,100)
         miss = random.randrange(1,100)
         if miss <= self.miss:
@@ -253,7 +253,7 @@ class warlock:
             print 'and heals you for {0}.'.format((damage/6)+heal_control)
             
     def f_ability1(self):
-        damage = random.randrange((self.intellect+self.wisdom+self.stamina)/2,(self.intellect+self.wisdom+self.stamina)*7/2)
+        damage = random.randint((self.intellect+self.wisdom+self.stamina)*5/4,(self.intellect+self.wisdom+self.stamina)*9/2)
         crit = random.randrange(1,100)
         miss = random.randrange(1,100)
         sac_hp = round(self.health * (0.17),0)
@@ -418,6 +418,7 @@ class mage:
      
     def f_ability2(self):
     	self.minion = 4
+    	self.damage = 0
     	self.f_minion()
     	
     def f_minion(self):
