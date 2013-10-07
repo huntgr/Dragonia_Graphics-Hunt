@@ -27,22 +27,22 @@ class gargantuan:
         self.health = 800
         self.stamina = 80
         self.damage = 0
-        self.miss = 20
+        self.miss = 11
         self.last = -1
         self.mod = 1
         self.dict = ['SMASHES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
         self.target = 'unknown'
         self.xp = 175
     def f_ability0(self):
-        ability = random.randrange(0,2)
-        if ability == 0:
-            damage = random.randint(10,60)*self.mod
+        ability = random.randint(0,2)
+        if ability == 0 or ability == 1:
+            damage = random.randint(20,60)*self.mod
             self.last = 0
             dam = str(damage)
             drawText('The Gargantuan decimates you.',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Gargantuan smashes you with his fist"
-        elif ability == 1:
-            damage = random.randint(20,70)*self.mod
+        elif ability == 2:
+            damage = random.randint(30,70)*self.mod
             self.last = 1
             self.damage = 0
             dam = str(damage)
@@ -72,41 +72,40 @@ class cyclops:
         self.health = 700
         self.stamina = 70
         self.damage = 0
-        self.miss = 15
+        self.miss = 10
         self.last = -1
         self.mod = 1
         self.dict = ['SMASHES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
         self.target = 'unknown'
         self.xp = 175
     def f_ability0(self):
-        ability = random.randrange(0,2)
-        if ability == 0:
-            damage = random.randrange(70,100)*self.mod
+        ability = random.randint(0,2)
+        if ability == 0 or ability == 1:
+            damage = random.randrange(60,90)*self.mod
             self.last = 0
             dam = str(damage)
             drawText('The cyclops smashes you with his fist',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The cyclops smashes you with his fist"
-        elif ability == 1:
+        elif ability == 2:
             damage = 0
-            self.last = 1
             self.damage = 0
             dam = str(damage)
             drawText('The cyclops is disoriented.',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The cyclops is disoriented and just looks at you funny"
         crit = random.randrange(1,10)
         miss = random.randrange(1,100)
-        if miss <= self.miss and ability != 1:
+        if miss <= self.miss and ability != 2:
             self.damage = 0
             drawText('The cyclops MISSES you completely!',font,windowSurface,TEXT,25,TEXTCOLOR)
             print "The cyclops MISSES you completely!"
-        elif crit >=9 and ability != 1:
+        elif crit >=9 and ability != 2:
             crit = damage*2
             self.damage = crit
             dam = str(crit)
             drawText('The cyclops CRITS you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
             print "The cyclops CRITS you for {0} damage".format(self.damage)
         else:
-            if ability != 1:
+            if ability != 2:
                 self.damage = damage
                 dam = str(self.damage)
                 drawText('The cyclops hits you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
@@ -157,9 +156,9 @@ class ogre:
     def f_ability0(self):
         crit = random.randrange(1,10)
         miss = random.randrange(1,100)
-        ability = random.randrange(0,2)
-        if ability == 0 or self.last == 1:
-            if self.last == 1:
+        ability = random.randint(0,2)
+        if ability == 0 or ability == 1 or self.last == 2:
+            if self.last == 2:
                 damage = (random.randrange(17,30)*3)*self.mod
                 miss = self.miss + 1
                 self.last = 0
@@ -170,9 +169,9 @@ class ogre:
                 drawText('The ogre stakes a swing with his club!',font,windowSurface,TEXT,0,TEXTCOLOR)
                 print "The Ogre takes a swing with his club!"
                 self.last = 0
-        elif ability == 1 and self.last !=1:
+        elif ability == 2 and self.last !=1:
             damage = 0
-            self.last = 1
+            self.last = 2
             self.damage = 0
             drawText('The ogre picks you up!',font,windowSurface,450,0,TEXTCOLOR)
             print "The ogre picks you up and prepares to slam you to the ground"
@@ -230,7 +229,7 @@ class gargoyle:
         self.health = 450
         self.stamina = 45
         self.damage = 0
-        self.miss = 10
+        self.miss = 8
         self.last = -1
         self.mod = 1
         self.dict = ['DECIMATES','HITS','CRUSHES','OBLITERATES','SCRAPES','BARELY HITS','CRITS','misses']
@@ -239,36 +238,35 @@ class gargoyle:
     def f_ability0(self):
         crit = random.randrange(1,10)
         miss = random.randrange(1,100)
-        ability = random.randrange(0,2)
-        if ability == 0:
+        ability = random.randint(0,2)
+        if ability == 0 or ability == 1:
             damage = random.randrange(30,45)*self.mod
             dam = str(damage)
             drawText('The Gargoyle swipes you with his fierce claws!',font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Gargoyle swipes you with his fierce claws!"
             self.last = 0
-        elif ability == 1:
+        elif ability == 2:
             damage = 0
-            self.last = 1
-            self.stamina += 5*self.mod*self.mod
-            self.health += 50*self.mod*self.mod
+            self.stamina += 10*self.mod*self.mod
+            self.health += 100*self.mod*self.mod
             self.damage = 0
-            drawText('The Gargoyle turns to stone, increasing health by '+str(50*self.mod*self.mod),font,windowSurface,TEXT,0,TEXTCOLOR)
-            print "The gargoyle turns to stone, increasing his health by "+str(50*self.mod*self.mod)
+            drawText('The Gargoyle turns to stone, increasing health by '+str(100*self.mod*self.mod),font,windowSurface,TEXT,0,TEXTCOLOR)
+            print "The gargoyle turns to stone, increasing his health by "+str(100*self.mod*self.mod)
         else:
             damage = random.randrange(30,45)*self.mod
             print "The Gargoyle swipes you with his fierce claws!"
-        if miss <= self.miss and ability != 1:
+        if miss <= self.miss and ability != 2:
             self.damage = 0
             drawText('The Gargoyle MISSES you completely!',font,windowSurface,TEXT,25,TEXTCOLOR)
             print "The Gargoyle MISSES you completely!"
-        elif crit >= 8 and ability != 1:
+        elif crit >= 8 and ability != 2:
             crit = damage*1.5
             self.damage = crit
             dam = str(crit)
             drawText('The Gargoyle CRITS you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
             print "The Gargoyle CRITS you for {0} damage".format(self.damage)
         else:
-            if ability != 1:
+            if ability != 2:
                 self.damage = damage
                 dam = str(self.damage)
                 drawText('The Gargoyle hits you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
@@ -308,8 +306,8 @@ class dragon:
     def f_ability0(self):
         crit = random.randrange(1,10)
         miss = random.randrange(1,100)
-        ability = random.randrange(0,2)
-        if ability == 0:
+        ability = random.randint(0,1)
+        if ability == 0 or self.last == 1:
             if self.last == 1:
                 damage = (random.randrange(30,80)*2)*self.mod
                 drawText('The tar ignites and you are engulfed in flames!',font,windowSurface,TEXT,0,TEXTCOLOR)
@@ -329,18 +327,18 @@ class dragon:
             damage = random.randrange(30,80)*self.mod
             drawText('The Dragon attacks you for '+str(damage),font,windowSurface,TEXT,0,TEXTCOLOR)
             print "The Dragon attacks you!"
-        if miss <= self.miss and ability != 1:
+        if miss <= self.miss and self.last == 0:
             self.damage = 0
             drawText('The Dragon MISSES you completely!',font,windowSurface,TEXT,25,TEXTCOLOR)
             print "The Dragon MISSES you completely!"
-        elif crit >= 9 and ability != 1:
+        elif crit >= 9 and self.last == 0:
             crit = damage*2.5
             self.damage = crit
             dam = str(crit)
             drawText('The Dragon CRITS you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR) 
             print "The Dragon CRITS you for {0}".format(self.damage)
         else:
-            if ability != 1:
+            if self.last == 0:
                 self.damage = damage
                 dam = str(self.damage)
                 drawText('The Dragon hits you for '+dam,font,windowSurface,TEXT,25,TEXTCOLOR)
@@ -408,7 +406,7 @@ class giant_snake:
     def f_ability0(self):
         crit = random.randrange(1,10)
         miss = random.randrange(1,100)
-        ability = random.randrange(0,2)
+        ability = random.randint(0,1)
         if ability == 0 or self.last == 1:
             if self.counter >= 1:
                 damage = (random.randrange(17,35) + (10*self.mod))*self.mod
