@@ -663,7 +663,7 @@ class cleric:
         damage = random.randrange((self.strength + self.intellect)*3,(self.strength + self.intellect)*4)
         crit = random.randrange(1,100)
         miss = random.randrange(1,100)
-        if (self.empowered):
+        if self.empowered == 1:
         	damage = round(damage*1.5,0)
         	self.empowered = 0
         if miss <= self.miss:
@@ -685,7 +685,7 @@ class cleric:
     	damage = random.randrange(self.wisdom*2, self.wisdom*5)
     	crit = random.randrange(1,100)
     	miss = random.randrange(1,100)
-    	if (self.empowered):
+    	if self.empowered == 1:
     		self.health += round(damage*0.8, 0)
     		self.empowered = 0
     		heal = str(damage*0.8)
@@ -713,7 +713,7 @@ class cleric:
     def f_ability2(self):
     	damage = self.wisdom
     	heal_amt = round(self.wisdom*2, 0)
-    	if (self.empowered):
+    	if self.empowered == 1:
     		wisdom_gain = 1
     		self.empowered = 0
     	else:

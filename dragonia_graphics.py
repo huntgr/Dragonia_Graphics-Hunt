@@ -453,6 +453,7 @@ def battle(place,player,enemy):
                             flag = True
                         else:
                             player[2].empowered = 1
+                            flag = False
                         enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                         if flag != True:
                             player[2].empowered = 0
