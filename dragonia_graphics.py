@@ -624,7 +624,7 @@ def map_enemies(enemies,locations,difficutly):
     return map_enemies
 
 def choose_difficulty():
-    windowSurface.blit(cur_map[0][0],cur_map[0][1])
+    windowSurface.blit(dragonia[0],dragonia[1])
     drawText('Please Choose your difficulty',font,windowSurface,300,0,(0,0,0))
     drawText('Beginner(1)',font,windowSurface,300,25,(0,0,0))
     drawText('Normal(2)',font,windowSurface,300,50,(0,0,0))
@@ -663,7 +663,7 @@ def pick_hero(heroes):
                     terminate()   
                 if event.key == ord('1'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
+                    windowSurface.blit(dragonia[0],dragonia[1])
                     drawText('You chose Mage!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -672,7 +672,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('2'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
+                    windowSurface.blit(dragonia[0],dragonia[1])
                     drawText('You chose Warrior!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -681,7 +681,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('3'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
+                    windowSurface.blit(dragonia[0],dragonia[1])
                     drawText('You chose Cleric!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -690,7 +690,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('4'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
+                    windowSurface.blit(dragonia[0],dragonia[1])
                     drawText('You chose Warlock!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -699,7 +699,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('5'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
+                    windowSurface.blit(dragonia[0],dragonia[1])
                     drawText('You chose Swashbuckler!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -1108,7 +1108,8 @@ bg_map = ['default.png','map_up.png','map_down.png','map_left.png','map_right.pn
 cur_map = [[],[]]
 cur_map[0] = choose_map(bg_map,0)
 cur_map[1] = 0
-windowSurface.blit(cur_map[0][0],cur_map[0][1])
+dragonia = dragonia()
+windowSurface.blit(dragonia[0],dragonia[1])
 while True:
     # set up the start of the game
     drop = False
@@ -1120,7 +1121,7 @@ while True:
     pygame.mixer.music.play(-1, 0.0)
     heroes = ['mage_dragonia.png','warrior_dragonia.png','cleric_dragonia.png','warlock_dragonia.png','swashbuckler_dragonia.png']
     #windowSurface.fill(BACKGROUNDCOLOR)
-    windowSurface.blit(cur_map[0][0],cur_map[0][1])
+    windowSurface.blit(dragonia[0],dragonia[1])
     player = pick_hero(heroes)
     player[1].topleft = (0,20)
     difficulty = choose_difficulty()
