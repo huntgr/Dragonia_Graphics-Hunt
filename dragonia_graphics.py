@@ -612,15 +612,16 @@ def all_enemies(enemies,locations,difficulty,num):
     while x != rand:
         all_enemies.append(pick_enemy(enemies))
         loc = random.randint(0,len(locations[num])-1)
+        #print len(locations[num])
         all_enemies[x][1].topleft = locations[num][loc]
         locations[num].remove(locations[num][loc])
         x += 1
     return all_enemies
 
-def map_enemies(enemies,locations,difficutly):
+def map_enemies(enemies,locations,difficulty):
     map_enemies = []
     for i in range(5):
-        map_enemies.append(all_enemies(enemies,locations,difficutly,i))
+        map_enemies.append(all_enemies(enemies,locations,difficulty,i))
     return map_enemies
 
 def choose_difficulty():
@@ -1113,8 +1114,12 @@ windowSurface.blit(dragonia[0],dragonia[1])
 while True:
     # set up the start of the game
     drop = False
-    locations = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
-    map_locations = [locations,locations,locations,locations,locations]
+    default_locs = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
+    up_locs = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
+    down_locs = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
+    left_locs = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
+    right_locs = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
+    map_locations = [default_locs,up_locs,down_locs,left_locs,right_locs]
     score = 0
     moveLeft = moveRight = moveUp = moveDown = False
     pygame.mixer.music.load('background_.ogg')
