@@ -36,13 +36,16 @@ class swashbuckler:
         self.damage = 0
         self.bleed = 0
         self.dodge = False
-        self.miss = 100/self.dexterity
-        self.crit = self.dexterity/1.5
+        self.miss = 300/(self.dexterity+self.strength)
+        self.crit = (self.dexterity+self.intellect+self.wisdom+self.strength)/5
         self.dict = ['SLICES','WOUNDS','HITS','GLANCES','DEMOLISHES','CRITS','MISSES']
-        self.target = 'unknown'
         self.abilities = ['Daring Strike(1), Puncture(2)']
-        self.xp = 0
         self.lvl = 1
+        self.attack1 = pygame.mixer.Sound('swash_attack1.wav')
+        self.attack2 = pygame.mixer.Sound('swash_attack1.wav')
+        self.attack3 = pygame.mixer.Sound('swash_attack3.wav')
+        self.death = pygame.mixer.Sound('player_death.wav')
+        self.potion = pygame.mixer.Sound('potion.wav')
     def f_displayStats(self):
         print "Class: ", self.cls, "\nName: ", self.name, "\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
     def f_abilities(self):
@@ -66,7 +69,7 @@ class swashbuckler:
     	crit = random.randrange(1,100)
         miss = random.randrange(1,100)
         dodge = random.randint(0,100)
-        if dodge <= self.dexterity/10:
+        if dodge <= self.dexterity/20:
             self.dodge = True
         else:
             self.dodge = False
@@ -129,7 +132,7 @@ class swashbuckler:
     		print "Your Shank CRITS for {0} damage!".format(self.damage)
     		print "The enemy is bleeding."
     		drawText('You CRIT for '+str(self.damage),font,windowSurface,0,0,TEXTCOLOR)
-    		drawText('Your enemy bleeds.',font,windowSurface,0,60,TEXTCOLOR)
+    		drawText('Your enemy bleeds.',font,windowSurface,0,30,TEXTCOLOR)
     	else:
     		self.damage = damage
     		print "Your Shank hits for {0} damage.".format(self.damage)
@@ -142,23 +145,20 @@ class swashbuckler:
     		self.damage += bleed_damage
     		self.bleed -= 1
     		print "Your enemy's wounds bleed for {0} damage.".format(bleed_damage)
-    		drawText("Your enemy's wounds bleed for "+str(bleed_damage),font,windowSurface,0,90,TEXTCOLOR)
-    	
-    def f_health(self):
-        print "You have {0} health remaining".format(self.health)
+    		drawText("Your enemy's wounds bleed for "+str(bleed_damage),font,windowSurface,0,60,TEXTCOLOR)
+    def f_potion(self):
+        self.potion.play()
+    def f_attack1(self):
+        self.attack1.play()
+    def f_attack2(self):
+        self.attack2.play()
+    def f_attack3(self):
+        self.attack3.play()
+    def f_death(self):
+        self.death.play()
     def f_level(self):
-        self.stamina += 4
-        self.wisdom += 1
-        self.intellect += 1
-        self.dexterity += 7
-        self.strength += 3
-        self.bleed = 0
-        self.health = self.stamina*10
-        self.miss = 100/self.dexterity
-        self.crit = self.dexterity/1.5
-        self.lvl += 1
-        print "\nYou've reached level {0}".format(self.lvl)
-        drawText('You reached level '+str(lvl),font,windowSurface,0,0,TEXTCOLOR)
+        self.miss = 300/(self.dexterity+self.strength)
+        self.crit = (self.dexterity+self.intellect+self.wisdom+self.strength)/5
     def f_sword(self):
         self.dexterity += 30
     def f_offhand(self):
@@ -200,13 +200,16 @@ class warlock:
         self.health = self.stamina*10
         self.shield = 0
         self.damage = 0
-        self.miss = 150/self.intellect
-        self.crit = self.intellect
+        self.miss = 210/(self.intellect+self.wisdom)
+        self.crit = (self.intellect+self.strength+self.wisdom+self.dexterity)/5
         self.dict = ['drains','depletes','consumes','leeches','hits','CRITS','misses']
-        self.target = 'unknown'
         self.abilities = ['Power Siphon','Entropic Assault']
-        self.xp = 0
         self.lvl = 1
+        self.attack1 = pygame.mixer.Sound('warlock_attack1.wav')
+        self.attack2 = pygame.mixer.Sound('warlock_attack2.wav')
+        self.attack3 = pygame.mixer.Sound('warlock_shield.wav')
+        self.death = pygame.mixer.Sound('player_death.wav')
+        self.potion = pygame.mixer.Sound('potion.wav')
     def f_displayStats(self):
         print "Class: ", self.cls, "\nName: ", self.name,"\nLevel: ",self.lvl, "\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
     def f_abilities(self):
@@ -239,7 +242,7 @@ class warlock:
             self.health += (self.damage/5)+heal_control
             dam = str(self.damage)
             heal = str((self.damage/5)+heal_control)
-            drawText('Your Power Siphon hits for '+dam,font,windowSurface,0,0,TEXTCOLOR)
+            drawText('Your Power Siphon HITS for '+dam,font,windowSurface,0,0,TEXTCOLOR)
             drawText('and heals you for '+heal,font,windowSurface,0,25,TEXTCOLOR)
             print 'Your Power Siphon {0} for {1} damage.'.format(self.dict[5],self.damage)
             print 'and heals you for {0}.'.format((self.damage/5)+heal_control)
@@ -250,7 +253,7 @@ class warlock:
             self.health += (damage/6)+heal_control
             dam = str(self.damage)
             heal = str((damage/6)+heal_control)
-            drawText('Your Power Siphon hits for '+dam,font,windowSurface,0,0,TEXTCOLOR)
+            drawText('Your Power Siphon HITS for '+dam,font,windowSurface,0,0,TEXTCOLOR)
             drawText('and heals you for '+heal,font,windowSurface,0,25,TEXTCOLOR)
             print 'Your Power Siphon {0} for {1} damage.'.format(self.dict[random.randrange(0,4)],self.damage)
             print 'and heals you for {0}.'.format((damage/6)+heal_control)
@@ -273,7 +276,7 @@ class warlock:
             self.health -= sac_hp
             dam = str(self.damage)
             hp = str(sac_hp)
-            drawText('Your Entropic Assault crits for '+dam,font,windowSurface,0,0,TEXTCOLOR)
+            drawText('Your Entropic Assault CRITS for '+dam,font,windowSurface,0,0,TEXTCOLOR)
             drawText(hp+' health consumed.',font,windowSurface,0,25,TEXTCOLOR)
             print "Your Entropic Assault crits for {0} damage.".format(self.damage)
             print "{0} health consumed.".format(sac_hp)
@@ -282,37 +285,34 @@ class warlock:
             self.health -= sac_hp
             dam = str(self.damage)
             hp = str(sac_hp)
-            drawText('Your Entropic Assault crits for '+dam,font,windowSurface,0,0,TEXTCOLOR)
+            drawText('Your Entropic Assault HITS for '+dam,font,windowSurface,0,0,TEXTCOLOR)
             drawText(hp+' health consumed.',font,windowSurface,0,25,TEXTCOLOR)
             print "Your Entropic Assault deals {0} damage.".format(self.damage)
             print "{0} health consumed.".format(sac_hp)
             
     def f_ability2(self):
         self.damage = 0
-    	sac_hp = self.health*0.1
-    	sac_shield = self.health*0.3
+    	sac_hp = round(self.health*0.1,0)
+    	sac_shield = round(self.health*0.3,0)
     	self.health -= sac_hp
     	self.shield += sac_shield
     	shield = str(sac_shield)
     	hp = str(sac_hp)
     	drawText('You sacrafice '+hp+' health for '+shield+' shield',font,windowSurface,0,25,TEXTCOLOR)
     	print "You sacrafice {0} health for {1} shield.".format(sac_hp, sac_shield)
-    	
-    def f_health(self):
-        print "You have {0} health and {1} shield remaining".format(self.health, self.shield)
+    def f_potion(self):
+        self.potion.play()
+    def f_attack1(self):
+        self.attack1.play()
+    def f_attack2(self):
+        self.attack2.play()
+    def f_attack3(self):
+        self.attack3.play()
+    def f_death(self):
+        self.death.play()
     def f_level(self):
-        self.stamina += 6
-        self.wisdom += 3
-        self.intellect += 4
-        self.dexterity += 1
-        self.strength += 1
-        self.health = self.stamina*10
-        self.miss = 100/self.intellect
-        self.crit = self.intellect
-        self.lvl += 1
-        lvl = str(self.lvl)
-        drawText('You reached level '+lvl,font,windowSurface,0,0,TEXTCOLOR)
-        print "\nYou've reached level {0}".format(self.lvl)
+        self.miss = 210/(self.intellect+self.wisdom)
+        self.crit = (self.intellect+self.strength+self.wisdom+self.dexterity)/5
     def f_sword(self):
         self.intellect += 30
     def f_offhand(self):
@@ -326,6 +326,9 @@ class warlock:
         self.health += 200
     def f_trinket(self):
         self.intellect += 45
+    def f_eye(self):
+        self.stamina += 50
+        self.health += 500
     def f_legendary_weapon(self):
         self.intellect += 100
     def f_air(self):
@@ -353,13 +356,16 @@ class mage:
         self.damage = 0
         self.minion = 0
         self.min_damage = 0
-        self.miss = 150/self.intellect
-        self.crit = self.intellect
+        self.miss = 210/(self.intellect+self.wisdom)
+        self.crit = (self.intellect+self.strength+self.wisdom+self.dexterity)/5
         self.dict = ['burns','incinertes','scourches','glances','hits','CRITS','misses']
-        self.target = 'unknown'
         self.abilities = ['Fireball']
-        self.xp = 0
         self.lvl = 1
+        self.attack1 = pygame.mixer.Sound('fireball.wav')
+        self.attack2 = pygame.mixer.Sound('mage_shield.wav')
+        self.attack3 = pygame.mixer.Sound('mage_pet.wav')
+        self.death = pygame.mixer.Sound('player_death.wav')
+        self.potion = pygame.mixer.Sound('potion.wav')
     def f_displayStats(self):
         print "Class: ", self.cls, "\nName: ", self.name, "\nLevel: ",self.lvl,"\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
     def f_abilities(self):
@@ -422,8 +428,8 @@ class mage:
      
     def f_ability2(self):
     	self.minion = 4
-    	self.damage = 0
     	self.f_minion()
+    	self.damage = self.min_damage
     	
     def f_minion(self):
     	minion_damage = (self.intellect + self.wisdom)/2
@@ -434,24 +440,19 @@ class mage:
                     self.min_damage = 0
      		drawText('Your minion hits for '+str(minion_damage),font,windowSurface,0,0, TEXTCOLOR)
      		print "Your minion hits for {0} damage.".format(minion_damage)
-     		
-       
-    def f_health(self):
-        print "You have {0} health and {1} shield remaining".format(self.health, self.shield)
-        
+    def f_potion(self):
+        self.potion.play() 		
+    def f_attack1(self):
+        self.attack1.play()
+    def f_attack2(self):
+        self.attack2.play()
+    def f_attack3(self):
+        self.attack3.play()
+    def f_death(self):
+        self.death.play()
     def f_level(self):
-        self.stamina += 2
-        self.wisdom += 4
-        self.intellect += 9
-        self.dexterity += 1
-        self.strength += 1
-        self.health = self.stamina*10
-        self.miss = 100/self.intellect
-        self.crit = self.intellect
-        self.lvl += 1
-        lvl = str(self.lvl)
-        drawText('You reached level '+lvl,font,windowSurface,0,0,TEXTCOLOR)
-        print "\nYou've reached level {0}".format(self.lvl)
+        self.miss = 210/(self.intellect+self.wisdom)
+        self.crit = (self.intellect+self.strength+self.wisdom+self.dexterity)/5
     def f_sword(self):
         self.intellect += 30
     def f_offhand(self):
@@ -494,28 +495,38 @@ class warrior:
         self.shield = 0
         self.damage = 0
         self.tactics = 0
-        self.miss = 100/self.strength
-        self.crit = self.strength/1.5
+        self.block = False
+        self.miss = 240/(self.strength+self.dexterity)
+        self.crit = (self.dexterity+self.intellect+self.wisdom+self.strength)/5
         self.dict = ['SLICES','WOUNDS','HITS','GLANCES','DEMOLISHES','CRITS','MISSES']
-        self.target = 'unknown'
         self.abilities = ['Heroic Slash']
-        self.xp = 0
         self.lvl = 1
+        self.attack1 = pygame.mixer.Sound('warrior_attack1.wav')
+        self.attack2 = pygame.mixer.Sound('warrior_attack2.wav')
+        self.attack3 = pygame.mixer.Sound('warrior_attack3.wav')
+        self.death = pygame.mixer.Sound('player_death.wav')
+        self.potion = pygame.mixer.Sound('potion.wav')
     def f_displayStats(self):
         print "Class: ", self.cls, "\nName: ", self.name,"\nLevel: ",self.lvl, "\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
     def f_abilities(self):
         font = pygame.font.SysFont('centaur', 20)
-        drawText('(1): Heroic Slash.  This ability does '+str(self.strength*2)+' to '+str(self.strength*4)+' damage.  Its damage is increased by Strength.',font,windowSurface,100,30,TEXTCOLOR)
+        drawText('(1): Heroic Slash.  This ability does '+str(self.strength*5/2)+' to '+str(self.strength*4)+' damage.  Its damage is increased by Strength.',font,windowSurface,100,30,TEXTCOLOR)
         drawText('(2): Combat Tactics.  This ability boosts your damage output and crit chance for 3 turns.',font,windowSurface,100,60,TEXTCOLOR)
-        drawText('(3): Furious Barrage.  Deals 3 swift strikes, dealing '+str(self.dexterity/2)+' to '+str((self.dexterity*2)+self.strength)+' damage.',font,windowSurface,100,90,TEXTCOLOR)
+        drawText('(3): Furious Barrage.  Deals 3 swift strikes, dealing '+str(self.dexterity/2)+' to '+str((self.dexterity*2)+self.strength*3/2)+' damage.',font,windowSurface,100,90,TEXTCOLOR)
         drawText('     Its damage is increased by Dexterity and Strength',font,windowSurface,100,120,TEXTCOLOR)
-        drawText('(Q): Potions.  You have 2 potions that heals you to full.',font,windowSurface,100,210,TEXTCOLOR)
-        drawText('     Using these does not cause the enemy to attack.',font,windowSurface,100,240,TEXTCOLOR)
+        drawText('(Q): Potions.  You have 2 potions that heals you to full.',font,windowSurface,100,150,TEXTCOLOR)
+        drawText('     Using these does not cause the enemy to attack.',font,windowSurface,100,180,TEXTCOLOR)
+        drawText('(BLOCK): The warrior has a chance to block that is directly related to Strength and Dexterity.',font,windowSurface,100,210,TEXTCOLOR)
         print "Heroic Slash(1).  This ability does {0} to {1} damage.\n".format(self.strength*2,self.strength*4)
         print "Combat Tactics(2). This ability boosts your damage output and crit chance for three turns."
         print "Furious Barrage(3). Deals three swift strikes dealing {0} to {1} damage.".format(self.dexterity/2,(self.dexterity*2)+self.strength)
         print " "
     def f_ability0(self):
+        block = random.randint(0,100)
+        if block <= (self.dexterity+self.strength)/4:
+            self.block = True
+        else:
+            self.block = False
     	if(self.tactics > 0):
     		bonus_damage = round(self.strength*1.5, 0)
     		crit_cap = 85
@@ -525,7 +536,7 @@ class warrior:
     	else:
     		bonus_damage = 0
     		crit_cap = 100
-        damage = random.randrange(self.strength*2,self.strength*4)+bonus_damage
+        damage = random.randrange(self.strength*5/4,self.strength*4)+bonus_damage
         crit = random.randrange(1,crit_cap)
         miss = random.randrange(1,100)
         if miss <= self.miss:
@@ -544,12 +555,22 @@ class warrior:
             print 'Your Heroic Slash {0} for {1} damage.'.format(self.dict[random.randrange(0,5)],self.damage)
     
     def f_ability1(self):
+        block = random.randint(0,100)
+        if block <= (self.dexterity+self.strength)/4:
+            self.block = True
+        else:
+            self.block = False
         self.damage = 0
     	self.tactics = 3
         drawText('Your prepare yourself for battle!',font,windowSurface,0,0,TEXTCOLOR)
     	print "You prepare your self for battle!"
     	
     def f_ability2(self):
+        block = random.randint(0,100)
+        if block <= (self.dexterity+self.strength)/4:
+            self.block = True
+        else:
+            self.block = False
     	damage = 0
     	furious_bar = []
     	bonus_damage = 0;
@@ -567,10 +588,10 @@ class warrior:
     			temp_damage = 0
     			furious_bar.append(temp_damage)
     		elif crit <= self.crit:
-    			temp_damage = random.randrange(self.dexterity/2,((self.dexterity*2)+self.strength))*2+bonus_damage
+    			temp_damage = random.randrange(self.dexterity/2,(self.dexterity*2)+self.strength*3/2)*2 + bonus_damage
     			furious_bar.append(temp_damage)
     		else:
-    			temp_damage = random.randrange(self.dexterity/2,(self.dexterity*2)+self.strength)+bonus_damage
+    			temp_damage = random.randrange(self.dexterity/2,(self.dexterity*2)+self.strength*3/2) + bonus_damage
     			furious_bar.append(temp_damage)
     	damage += furious_bar[0] + furious_bar[1] + furious_bar[2]
     	self.damage = damage
@@ -582,22 +603,19 @@ class warrior:
         drawText(dam1+', '+dam2+' and '+dam3,font,windowSurface,0,50,TEXTCOLOR)
     	print "Primed for battle..."
     	print "Your furious barrage of blows deal {0}, {1}, and {2} damage".format(furious_bar[0],furious_bar[1],furious_bar[2])
-    		
-    def f_health(self):
-        print "You have {0} health remaining".format(self.health)
+    def f_potion(self):
+        self.potion.play()
+    def f_attack1(self):
+        self.attack1.play()
+    def f_attack2(self):
+        self.attack2.play(0,1800)
+    def f_attack3(self):
+        self.attack3.play(1)
+    def f_death(self):
+        self.death.play()
     def f_level(self):
-        self.stamina += 6
-        self.wisdom += 1
-        self.intellect += 1
-        self.dexterity += 3
-        self.strength += 7
-        self.health = self.stamina*10
-        self.miss = 100/self.strength
-        self.crit = self.strength/1.5
-        self.lvl += 1
-        lvl = str(self.lvl)
-        drawText('You reached level '+lvl,font,windowSurface,0,0,TEXTCOLOR)
-        print "\nYou've reached level {0}".format(self.lvl)
+        self.miss = 240/(self.strength+self.dexterity)
+        self.crit = (self.dexterity+self.intellect+self.wisdom+self.strength)/5
     def f_sword(self):
         self.strength += 30
     def f_offhand(self):
@@ -639,13 +657,16 @@ class cleric:
         self.shield = 0
         self.damage = 0
         self.empowered = 0
-        self.miss = 100/(self.intellect + self.strength)
-        self.crit = (self.wisdom + self.intellect)/1.5
+        self.miss = 200/(self.intellect + self.strength)
+        self.crit = (self.wisdom + self.intellect+self.dexterity+self.strength)/5
         self.dict = ['cleanses','pierces','glances','devastates','hits','CRITS','misses']
-        self.target = 'unknown'
         self.abilities = ['Holy Blow']
-        self.xp = 0
         self.lvl = 1
+        self.attack1 = pygame.mixer.Sound('cleric_attack1.wav')
+        self.attack2 = pygame.mixer.Sound('cleric_attack2.wav')
+        self.attack3 = pygame.mixer.Sound('cleric_attack3.wav')
+        self.death = pygame.mixer.Sound('player_death.wav')
+        self.potion = pygame.mixer.Sound('potion.wav')
     def f_displayStats(self):
         print "Class: ", self.cls, "\nName: ", self.name,"\nLevel: ",self.lvl, "\nStamina: ", self.stamina, "\nWisdom: ", self.wisdom, "\nIntellect: ",self.intellect, "\nDexterity: ",self.dexterity, "\nStrength: ",self.strength, "\nMiss: ",self.miss,"\nCrit: ",self.crit
     def f_abilities(self):
@@ -736,22 +757,19 @@ class cleric:
     	drawText('Healed for '+heal,font,windowSurface,0,25,TEXTCOLOR)
     	drawText('Wisdom boosted by '+wis,font,windowSurface,0,50,TEXTCOLOR)
     	print "{0} damage dealt, healed for {1}, wisdom boosted by {2}.".format(damage, heal_amt, wisdom_gain)
-    	
-    def f_health(self):
-        print "You have {0} health remaining".format(self.health)
+    def f_potion(self):
+        self.potion.play()	
+    def f_attack1(self):
+        self.attack1.play()
+    def f_attack2(self):
+        self.attack2.play()
+    def f_attack3(self):
+        self.attack3.play()
+    def f_death(self):
+        self.death.play()
     def f_level(self):
-        self.stamina += 4
-        self.wisdom += 3
-        self.intellect += 3
-        self.dexterity += 1
-        self.strength += 5
-        self.health = self.stamina*10
-        self.miss = 100/(self.intellect + self.strength)
-        self.crit = (self.wisdom + self.intellect)/1.5
-        self.lvl += 1
-        lvl = str(self.lvl)
-        drawText('You reached level '+lvl,font,windowSurface,0,0,TEXTCOLOR)
-        print "\nYou've reached level {0}".format(self.lvl)
+        self.miss = 200/(self.intellect + self.strength)
+        self.crit = (self.wisdom + self.intellect+self.dexterity+self.strength)/5
     def f_sword(self):
         self.intellect += 30
     def f_offhand(self):

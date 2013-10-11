@@ -7,8 +7,10 @@ WINDOWWIDTH = 896
 WINDOWHEIGHT = 504
 TEXTCOLOR = (255,255,255)
 BACKGROUNDCOLOR = (0,0,0)
+FPS_COM = 50
 FPS = 60
 PLAYERMOVERATE = 5
+room = False
 
 def mouse_test():
     pygame.event.set_grab(True)
@@ -82,6 +84,7 @@ def level_up(player):
              drawText('Strength: '+str(player[2].strength),font,windowSurface,375,218,TEXTCOLOR)
              pygame.display.update()
              player[2].health = player[2].stamina*10
+             player[2].f_level()
          pygame.event.set_grab(False)
          
 def damage(enemy,player,alive):
@@ -93,17 +96,27 @@ def damage(enemy,player,alive):
         else:
             player.shield -= enemy.damage
             enemy.damage = 0
+    if player.cls == 'warrior':
+        if player.block == True:
+            fnt = pygame.font.SysFont('centaur', 22)
+            drawText('You BLOCKED the enemies attack and take '+str(player.lvl+25)+' less damage.',fnt,windowSurface,0,90,TEXTCOLOR)
+            pygame.display.update()
+            if (enemy.damage - player.lvl+25) >=0:
+                player.health -= (enemy.damage - (player.lvl+25))
+        else:
+            player.health -= enemy.damage
     if player.cls == 'swashbuckler':
         if player.dodge == True:
             fnt = pygame.font.SysFont('centaur', 22)
-            drawText('You DODGED the enemies attack.',fnt,windowSurface,0,30,TEXTCOLOR)
+            drawText('You DODGED the enemies attack.',fnt,windowSurface,0,90,TEXTCOLOR)
             pygame.display.update()
-            #mainClock.tick(3)
         else:
             player.health -= enemy.damage
-    else:
+    if player.cls == 'mage' or player.cls == 'warlock' or player.cls == 'cleric':
         player.health -= enemy.damage
     if enemy.health <= 0 and player.health > 0:
+         LowHPSound.stop()
+         enemy.f_death()
          player.health = player.health + enemy.stamina*2
          if player.health > (player.stamina*10):
              player.health = player.stamina*10
@@ -182,16 +195,16 @@ def mage_fireball():
     data = [fireballImage,fireballRect]
     return data
 
-def dragonia():
-    dragonImage = pygame.image.load('dragonia.png')
-    dragonRect = dragonImage.get_rect()
-    data = [dragonImage,dragonRect]
-    return data
-
 def mage_minion():
     minImage = pygame.image.load('mage_minion_dragonia.png')
     minRect = minImage.get_rect()
     data = [minImage,minRect]
+    return data
+
+def dragonia():
+    dragImage = pygame.image.load('dragonia.png')
+    dragRect = dragImage.get_rect()
+    data = [dragImage,dragRect]
     return data
 
 def alt_mage():
@@ -204,45 +217,46 @@ def mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_
     enemy = enemy_place
     minion = mage_minion()
     min_attack = True
-    for i in range(6):
+    for i in range(16):
         mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
-        minion[1].topleft = (220+(i*50),290)
+        minion[1].topleft = (220+(i*17),290)
         windowSurface.blit(minion[0], minion[1])
         pygame.display.update()
-        mainClock.tick(10)
+    mainClock.tick(FPS_COM)
     min_attack = False
     if fireball != []:
-        for i in range(6):
-            fireball[1].topleft = (220+(i*50),290)
+        for i in range(16):
+            fireball[1].topleft = (220+(i*17),290)
             mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
             windowSurface.blit(fireball[0], fireball[1])
             pygame.display.update()
-            mainClock.tick(10)
+        mainClock.tick(FPS_COM)
     
 def abilityone(ability1,place,enemy_place,plyr,enemy,player,en_attack,min_attack):
     enemy = enemy_place
-    for i in range(6):
+    for i in range(16):
         if player[2].cls == 'mage':
             mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
-            ability1[1].topleft = (220+(i*50),290)
+            ability1[1].topleft = (220+(i*17),290)
             windowSurface.blit(ability1[0], ability1[1])
         elif player[2].cls == 'cleric':
             cleric_battle(place,enemy_place,plyr,enemy,player,en_attack)
-            ability1[1].topleft = (220+(i*50),400)
+            ability1[1].topleft = (220+(i*17),400)
             windowSurface.blit(ability1[0], ability1[1])
         elif player[2].cls == 'warlock':
             warlock_battle(place,enemy_place,plyr,enemy,player,en_attack)
-            ability1[1].topleft = (220+(i*50),400)
+            ability1[1].topleft = (220+(i*17),400)
             windowSurface.blit(ability1[0], ability1[1])
         pygame.display.update()
-        mainClock.tick(10)
+    #time.sleep(0.5)
+    mainClock.tick(FPS_COM)
   
 def default_attack(place,enemy_place,plyr,player,en_attack,min_attack):
     enemy = enemy_place
-    for i in range(6):
-        plyr[1].topleft = (200+(i*50),400)
+    for i in range(16):
+        plyr[1].topleft = (200+(i*17),400)
         if player[2].cls == 'mage':
-            mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)  
+            mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
         elif player[2].cls == 'warrior':
             warrior_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'cleric':
@@ -252,14 +266,17 @@ def default_attack(place,enemy_place,plyr,player,en_attack,min_attack):
         elif player[2].cls == 'swashbuckler':
             swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack)
         pygame.display.update()
-        mainClock.tick(10)
+    mainClock.tick(FPS_COM)
+    #time.sleep(0.5)
     plyr[1].topleft = (200,400)
     
 def enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack):
     enemy = enemy_place
     en_attack = True
     min_attack = False
-    for i in range(6):
+    enemy[2].f_attack()
+    for i in range(16):
+        enemy[1].topleft = (500-(i*17),200)
         if player[2].cls == 'mage':
             mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)  
         elif player[2].cls == 'warrior':
@@ -270,18 +287,19 @@ def enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack):
             warlock_battle(place,enemy_place,plyr,enemy,player,en_attack)
         elif player[2].cls == 'swashbuckler':
             swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack)
-        enemy[1].topleft = (500-(i*50),200)
-        windowSurface.blit(enemy[0],enemy[1])    
+        #enemy[1].topleft = (500-(i*5),200)
+        #windowSurface.blit(enemy[0],enemy[1])    
         pygame.display.update()
-        mainClock.tick(10)
+    mainClock.tick(FPS_COM)
     enemy[1].topleft = (500,200)
+    #time.sleep(0.5)
     en_attack = False
     
 def terminate():
     pygame.quit()
     sys.exit()
 
-def waitForPlayerToPressKey():
+def waitForPlayerToPressKey(thing):
     while True:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -290,7 +308,10 @@ def waitForPlayerToPressKey():
                 if event.key == K_ESCAPE: # pressing escape quits
                     terminate()
                 elif event.key == K_RETURN:
-                    return
+                    return False
+                if thing == True:
+                    if event.key == ord('r'):
+                        return True
 
 def playerHasHitEnemy(playerRect, the_enemies):
     i = 0
@@ -308,9 +329,8 @@ def drawText(text, font, surface, x, y, color):
 
 def mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack):
     windowSurface.blit(place[0],place[1])
-    if en_attack != True:
-        windowSurface.blit(enemy_place[0],enemy_place[1])
-    if player[2].minion > 0 and min_attack == False:
+    windowSurface.blit(enemy_place[0],enemy_place[1])
+    if player[2].minion > 0:
         plyralt = alt_mage()
         plyralt[1].topleft = (150,350)
         windowSurface.blit(plyralt[0],plyralt[1])
@@ -318,7 +338,8 @@ def mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack):
         windowSurface.blit(plyr[0],plyr[1])
     if player[2].shield != 0:
         shield = mage_shield()
-        shield[1].topleft = (150,350)
+        current_loc = plyr[1].topleft
+        shield[1].topleft =  (current_loc[0]-50,current_loc[1]-50)
         windowSurface.blit(shield[0],shield[1])
     enemy_health(enemy[2].health,enemy_place)
     player_health(player[2].health,plyr,player[2].shield)
@@ -326,12 +347,12 @@ def mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack):
     
 def warrior_battle(place,enemy_place,plyr,enemy,player,en_attack):
     windowSurface.blit(place[0],place[1])
-    if en_attack != True:
-        windowSurface.blit(enemy_place[0],enemy_place[1])
+    windowSurface.blit(enemy_place[0],enemy_place[1])
     windowSurface.blit(plyr[0],plyr[1])
     if player[2].tactics > 0:
         tact = warrior_tactics()
-        tact[1].topleft = (150,350)
+        current_loc = plyr[1].topleft
+        tact[1].topleft = (current_loc[0]-50,current_loc[1]-50)
         windowSurface.blit(tact[0],tact[1])
     enemy_health(enemy[2].health,enemy_place)
     player_health(player[2].health,plyr,player[2].shield)
@@ -339,12 +360,12 @@ def warrior_battle(place,enemy_place,plyr,enemy,player,en_attack):
     
 def cleric_battle(place,enemy_place,plyr,enemy,player,en_attack):
     windowSurface.blit(place[0],place[1])
-    if en_attack != True:
-        windowSurface.blit(enemy_place[0],enemy_place[1])
+    windowSurface.blit(enemy_place[0],enemy_place[1])
     windowSurface.blit(plyr[0],plyr[1])
     if player[2].empowered == 1:
         emp = cleric_empowerment()
-        emp[1].topleft = (150,350)
+        current_loc = plyr[1].topleft
+        emp[1].topleft = (current_loc[0]-50,current_loc[1]-50)
         windowSurface.blit(emp[0],emp[1])
     enemy_health(enemy[2].health,enemy_place)
     player_health(player[2].health,plyr,player[2].shield)
@@ -352,12 +373,12 @@ def cleric_battle(place,enemy_place,plyr,enemy,player,en_attack):
 
 def warlock_battle(place,enemy_place,plyr,enemy,player,en_attack):
     windowSurface.blit(place[0],place[1])
-    if en_attack != True:
-        windowSurface.blit(enemy_place[0],enemy_place[1])
+    windowSurface.blit(enemy_place[0],enemy_place[1])
     windowSurface.blit(plyr[0],plyr[1])
     if player[2].shield != 0:
         shield = warlock_shield()
-        shield[1].topleft = (150,350)
+        current_loc = plyr[1].topleft
+        shield[1].topleft =  (current_loc[0]-50,current_loc[1]-50)
         windowSurface.blit(shield[0],shield[1])
     enemy_health(enemy[2].health,enemy_place)
     player_health(player[2].health,plyr,player[2].shield)
@@ -365,8 +386,7 @@ def warlock_battle(place,enemy_place,plyr,enemy,player,en_attack):
 
 def swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack):
     windowSurface.blit(place[0],place[1])
-    if en_attack != True:
-        windowSurface.blit(enemy_place[0],enemy_place[1])
+    windowSurface.blit(enemy_place[0],enemy_place[1])
     windowSurface.blit(plyr[0],plyr[1])
     enemy_health(enemy[2].health,enemy_place)
     player_health(player[2].health,plyr,player[2].shield)
@@ -413,6 +433,10 @@ def battle(place,player,enemy):
                 if event.key == K_ESCAPE:
                     terminate()   
                 if event.key == ord('1'):
+                    if room == True:
+                        laugh.play()
+                    else:
+                        player[2].f_attack1()
                     if player[2].cls == 'mage':
                         fireball = mage_fireball()
                         if player[2].minion > 0:
@@ -428,6 +452,7 @@ def battle(place,player,enemy):
                         default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     if player[2].cls == 'swashbuckler':
                         default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
+                    time.sleep(0.5)
                     enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                     player[2].f_ability0()
                     enemy[2].f_ability0()
@@ -436,11 +461,16 @@ def battle(place,player,enemy):
                     time.sleep(1)
 
                 if event.key == ord('2'):
+                    if room == True:
+                        laugh.play()
+                    else:
+                        player[2].f_attack2()
                     if player[2].cls == 'mage':
                         player[2].f_ability1()
                         fireball = []
                         if player[2].minion > 0:
                             mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                        time.sleep(0.5)
                         enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         enemy[2].f_ability0()
                         alive = damage(enemy[2],player[2],alive)
@@ -454,6 +484,7 @@ def battle(place,player,enemy):
                         else:
                             player[2].empowered = 1
                             flag = False
+                        time.sleep(0.5)
                         enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                         if flag != True:
                             player[2].empowered = 0
@@ -466,6 +497,7 @@ def battle(place,player,enemy):
                         tact = warrior_tactics()
                         tact[1].topleft = (150,350)
                         player[2].tactics = 1
+                        time.sleep(0.5)
                         enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         player[2].f_ability1()
                         enemy[2].f_ability0()
@@ -475,6 +507,7 @@ def battle(place,player,enemy):
                     if player[2].cls == 'warlock':
                         ent = warlock_entropic()
                         abilityone(ent,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
+                        time.sleep(0.5)
                         enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         player[2].f_ability1()
                         enemy[2].f_ability0()
@@ -483,6 +516,7 @@ def battle(place,player,enemy):
                         time.sleep(1)
                     if player[2].cls == 'swashbuckler':
                         default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
+                        time.sleep(0.5)
                         enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)        
                         player[2].f_ability1()
                         enemy[2].f_ability0()
@@ -491,8 +525,10 @@ def battle(place,player,enemy):
                         time.sleep(1)
                         
                 if event.key == ord('3'):
-                    if player[2].cls == 'warlock':
-                        player[2].f_ability2()
+                    if room == True:
+                        laugh.play()
+                    else:
+                        player[2].f_attack3()
                     if player[2].cls == 'warrior':
                         default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     if player[2].cls == 'mage':
@@ -500,6 +536,7 @@ def battle(place,player,enemy):
                         mage_with_minion(fireball,place,enemy_place,plyr,enemy,player,en_attack,min_attack)
                     if player[2].cls == 'swashbuckler':
                         default_attack(place,enemy_place,plyr,player,en_attack,min_attack)
+                    time.sleep(0.5)
                     enemy_attack(place,enemy_place,plyr,player,en_attack,min_attack)
                     player[2].f_ability2()
                     enemy[2].f_ability0()
@@ -509,6 +546,7 @@ def battle(place,player,enemy):
                 
                 if event.key == ord('q'):
                     if player[2].health_pot >= 1:
+                        player[2].f_potion()
                         player[2].health_pot -= 1
                         player[2].health = player[2].stamina*10
                         drawText('You healed to full!', font, windowSurface, 0, 0,(255,255,255))
@@ -516,7 +554,10 @@ def battle(place,player,enemy):
                         drawText('You have no potions left.',font,windowSurface,0,0,(255,255,255))
                     pygame.display.update()
                     time.sleep(1)
-                    
+        if player[2].health < 30:
+            LowHPSound.play(-1)
+        else:
+            LowHPSound.stop()
         if player[2].cls == 'mage':
             mage_battle(place,enemy_place,plyr,enemy,player,en_attack,min_attack)
         elif player[2].cls == 'warrior':
@@ -535,6 +576,7 @@ def battle(place,player,enemy):
             time.sleep(1)
         #player_health(player[2].health,plyr,player[2].shield)
         pygame.display.update()
+        mainClock.tick(FPS_COM)
     return alive
 
 def pick_enemy(enemies):
@@ -553,28 +595,36 @@ def pick_enemy(enemies):
         enemyType = cyclops()
     elif rand == 5:
         enemyType = gargantuan()
+    elif rand == 6:
+        enemyType = zombie()
     data = [enemyImage,enemyRect,enemyType]
     return data
 
-def all_enemies(enemies,locations,difficulty):
+def all_enemies(enemies,locations,difficulty,num):
     if difficulty == 1:
-        rand = random.randint(4,8)
+        rand = random.randint(2,3)
     elif difficulty == 2:
-        rand = random.randint(9,15)
+        rand = random.randint(5,7)
     elif difficulty == 3:
-        rand = random.randint(16,23)
+        rand = random.randint(7,9)
     all_enemies = []
     x = 0
     while x != rand:
         all_enemies.append(pick_enemy(enemies))
-        loc = random.randint(0,len(locations)-1)
-        all_enemies[x][1].topleft = locations[loc]
-        locations.remove(locations[loc])
+        loc = random.randint(0,len(locations[num])-1)
+        all_enemies[x][1].topleft = locations[num][loc]
+        locations[num].remove(locations[num][loc])
         x += 1
     return all_enemies
 
+def map_enemies(enemies,locations,difficutly):
+    map_enemies = []
+    for i in range(5):
+        map_enemies.append(all_enemies(enemies,locations,difficutly,i))
+    return map_enemies
+
 def choose_difficulty():
-    windowSurface.blit(dragonia[0],dragonia[1])
+    windowSurface.blit(cur_map[0][0],cur_map[0][1])
     drawText('Please Choose your difficulty',font,windowSurface,300,0,(0,0,0))
     drawText('Beginner(1)',font,windowSurface,300,25,(0,0,0))
     drawText('Normal(2)',font,windowSurface,300,50,(0,0,0))
@@ -613,7 +663,7 @@ def pick_hero(heroes):
                     terminate()   
                 if event.key == ord('1'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(dragonia[0],dragonia[1])
+                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
                     drawText('You chose Mage!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -622,7 +672,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('2'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(dragonia[0],dragonia[1])
+                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
                     drawText('You chose Warrior!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -631,7 +681,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('3'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(dragonia[0],dragonia[1])
+                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
                     drawText('You chose Cleric!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -640,7 +690,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('4'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(dragonia[0],dragonia[1])
+                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
                     drawText('You chose Warlock!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -649,7 +699,7 @@ def pick_hero(heroes):
                     choosing = False
                 if event.key == ord('5'):
                     #windowSurface.fill(BACKGROUNDCOLOR)
-                    windowSurface.blit(dragonia[0],dragonia[1])
+                    windowSurface.blit(cur_map[0][0],cur_map[0][1])
                     drawText('You chose Swashbuckler!',font,windowSurface,0,0,(0,0,0))
                     pygame.display.update()
                     time.sleep(1)
@@ -667,7 +717,9 @@ def class_abilities(player):
     player[2].f_abilities()
     drawText('Press ENTER to begin.', font, windowSurface, 100, 0,(255,255,255))
     pygame.display.update()
-    waitForPlayerToPressKey()
+    class_screen = True
+    room = waitForPlayerToPressKey(class_screen)
+    return room
     
 def place():
     places = ['cave_dragonia.png','desert_dragonia.png','water.png','sun.png']
@@ -698,22 +750,22 @@ def loot(enemy):
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'belt']
             dropped = True
-        elif rand >= 25 and rand < 30:
+        elif rand >= 25 and rand < 27:
             lootImage = pygame.image.load('cloak_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'cloak']
             dropped = True
-        elif rand >= 30 and rand < 31:
+        elif rand == 27:
             lootImage = pygame.image.load('legendary_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'legendary']
             dropped = True
-        elif rand >=31 and rand < 35:
+        elif rand >= 28 and rand < 34:
             lootImage = pygame.image.load('trinket_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
             dropped = True
-        elif rand >= 35 and rand < 53:
+        elif rand >= 34 and rand < 53:
             lootImage = pygame.image.load('air_essence.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'air']
@@ -736,32 +788,27 @@ def loot(enemy):
         else:
             dropped = False
     elif enemy[2].name == 'snake':
-        if rand >= 0 and rand < 8:
+        if rand >= 0 and rand < 5:
             lootImage = pygame.image.load('sword_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'sword']
             dropped = True
-        elif rand >= 8 and rand < 25:
+        elif rand >= 5 and rand < 25:
             lootImage = pygame.image.load('belt_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'belt']
             dropped = True
-        elif rand >= 25 and rand < 28:
+        elif rand >= 25 and rand < 27:
             lootImage = pygame.image.load('cloak_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'cloak']
             dropped = True
-        elif rand >= 28 and rand < 29:
-            lootImage = pygame.image.load('legendary_dragonia.png')
-            lootRect = lootImage.get_rect()
-            data = [lootImage,lootRect,True,'legendary']
-            dropped = True
-        elif rand == 29:
+        elif rand == 27:
             lootImage = pygame.image.load('trinket_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
             dropped = True
-        elif rand >= 30 and rand < 48:
+        elif rand >= 28 and rand < 48:
             lootImage = pygame.image.load('air_essence.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'air']
@@ -832,32 +879,27 @@ def loot(enemy):
         else:
             dropped = False
     elif enemy[2].name == 'ogre':
-        if rand >= 0 and rand < 11:
+        if rand >= 0 and rand < 5:
             lootImage = pygame.image.load('sword_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'sword']
             dropped = True
-        elif rand >= 11 and rand < 25:
+        elif rand >= 5 and rand < 25:
             lootImage = pygame.image.load('belt_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'belt']
             dropped = True
-        elif rand >= 25 and rand < 29:
+        elif rand >= 25 and rand < 27:
             lootImage = pygame.image.load('cloak_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'cloak']
             dropped = True
-        elif rand >= 29 and rand < 30:
-            lootImage = pygame.image.load('legendary_dragonia.png')
-            lootRect = lootImage.get_rect()
-            data = [lootImage,lootRect,True,'legendary']
-            dropped = True
-        elif rand >=30 and rand < 31:
+        elif rand == 27:
             lootImage = pygame.image.load('trinket_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
             dropped = True
-        elif rand >= 31 and rand < 49:
+        elif rand >= 28 and rand < 49:
             lootImage = pygame.image.load('air_essence.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'air']
@@ -880,37 +922,32 @@ def loot(enemy):
         else:
             dropped = False
     elif enemy[2].name == 'gargantuan':
-        if rand >= 0 and rand < 35:
+        if rand >= 0 and rand < 15:
             lootImage = pygame.image.load('sword_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'sword']
             dropped = True
-        elif rand >= 35 and rand < 45:
+        elif rand >= 15 and rand < 45:
             lootImage = pygame.image.load('belt_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'belt']
             dropped = True
-        elif rand >= 45 and rand < 52:
+        elif rand >= 45 and rand < 48:
             lootImage = pygame.image.load('cloak_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'cloak']
             dropped = True
-        elif rand >= 52 and rand < 58:
-            lootImage = pygame.image.load('eye.png')
-            lootRect = lootImage.get_rect()
-            data = [lootImage,lootRect,True,'eye']
-            dropped = True
-        elif rand >= 58 and rand < 60:
+        elif rand == 48:
             lootImage = pygame.image.load('legendary_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'legendary']
             dropped = True
-        elif rand >=60 and rand < 65:
+        elif rand >= 49 and rand < 55:
             lootImage = pygame.image.load('trinket_dragonia.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'trinket']
             dropped = True
-        elif rand >= 65 and rand < 74:
+        elif rand >= 55 and rand < 74:
             lootImage = pygame.image.load('water_essence.png')
             lootRect = lootImage.get_rect()
             data = [lootImage,lootRect,True,'water']
@@ -985,13 +1022,63 @@ def loot(enemy):
             dropped = True
         else:
             dropped = False
+    elif enemy[2].name == 'zombie':
+        if rand >= 0 and rand < 4:
+            lootImage = pygame.image.load('sword_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'sword']
+            dropped = True
+        elif rand >= 4 and rand < 25:
+            lootImage = pygame.image.load('belt_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'belt']
+            dropped = True
+        elif rand >= 25 and rand < 26:
+            lootImage = pygame.image.load('cloak_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'cloak']
+            dropped = True
+        elif rand >= 26 and rand < 28:
+            lootImage = pygame.image.load('trinket_dragonia.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'trinket']
+            dropped = True
+        elif rand >= 28 and rand < 49:
+            lootImage = pygame.image.load('air_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'air']
+            dropped = True
+        elif rand >= 49 and rand < 67:
+            lootImage = pygame.image.load('water_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'water']
+            dropped = True
+        elif rand >= 67 and rand < 85:
+            lootImage = pygame.image.load('fire_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'fire']
+            dropped = True
+        elif rand >= 85 and rand <= 100:
+            lootImage = pygame.image.load('earth_essence.png')
+            lootRect = lootImage.get_rect()
+            data = [lootImage,lootRect,True,'earth']
+            dropped = True
+        else:
+            dropped = False
     if dropped == False:
         lootImage = pygame.image.load('sword_dragonia.png')
         lootRect = lootImage.get_rect()
         data = [lootImage,lootRect,False,'Nothing']
     return data
 
+def choose_map(maps,num):
+    MapImage = pygame.image.load(maps[num])
+    MapRect = MapImage.get_rect()
+    data = [MapImage,MapRect]
+    return data
+
 pygame.init()
+pygame.FULLSCREEN
 mainClock = pygame.time.Clock()
 windowSurface = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT))
 pygame.display.set_caption('Dragonia')
@@ -1000,40 +1087,55 @@ pygame.display.set_icon(pygame.image.load('dragonia!.png'))
 font = pygame.font.SysFont('centaur', 30)
 
 # set up sounds
-gameOverSound = pygame.mixer.Sound('gameover.wav')
-pygame.mixer.music.load('background_.ogg')
+DeathSound = pygame.mixer.Sound('death.wav')
+laugh = pygame.mixer.Sound('laugh.wav')
+LowHPSound = pygame.mixer.Sound('low_hp.wav')
+
 
 #enemy locations
 locations = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
 #enemy setup
-enemies = ['ogre.png','snake.png','garg_dragonia_small.png','dragon.png','cyclops_dragonia.png','gargantuan_dragonia.png']
+enemies = ['ogre.png','snake.png','gargoyle_dragonia.png','dragon.png','cyclops_dragonia.png','gargantuan_dragonia.png','zombie_dragonia.png']
 #enemy = pick_enemy(enemies)
 
 #set up load screen
-dragonia = dragonia()
+#dragonia = dragonia()
 #test
 #the_enemies = all_enemies(enemies,locations)
 #topScore = 0
+bg_map = ['default.png','map_up.png','map_down.png','map_left.png','map_right.png']
+
+cur_map = [[],[]]
+cur_map[0] = choose_map(bg_map,0)
+cur_map[1] = 0
+windowSurface.blit(cur_map[0][0],cur_map[0][1])
 while True:
     # set up the start of the game
     drop = False
     locations = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
+    map_locations = [locations,locations,locations,locations,locations]
     score = 0
     moveLeft = moveRight = moveUp = moveDown = False
+    pygame.mixer.music.load('background_.ogg')
     pygame.mixer.music.play(-1, 0.0)
     heroes = ['mage_dragonia.png','warrior_dragonia.png','cleric_dragonia.png','warlock_dragonia.png','swashbuckler_dragonia.png']
     #windowSurface.fill(BACKGROUNDCOLOR)
-    windowSurface.blit(dragonia[0],dragonia[1])
+    windowSurface.blit(cur_map[0][0],cur_map[0][1])
     player = pick_hero(heroes)
     player[1].topleft = (0,20)
     difficulty = choose_difficulty()
-    class_abilities(player)
-    the_enemies = all_enemies(enemies,locations,difficulty)
+    room = class_abilities(player)
+    if room == True:
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load('room_music.wav')
+        pygame.mixer.music.play(-1, 0.0)
+    the_map_enemies =  map_enemies(enemies,map_locations,difficulty)
     you_win = False
     leveled = False
     while True: # the game loop runs while the game part is playing
         #score += 1 # increase score
 
+       
         for event in pygame.event.get():
             if event.type == QUIT:
                 terminate()
@@ -1067,36 +1169,76 @@ while True:
         # Move the player around.
         if moveLeft and player[1].left > 0:
             player[1].move_ip(-1 * PLAYERMOVERATE, 0)
+        elif moveLeft and player[1].left <= 0 and cur_map[1] == 0:
+            cur_map[0] = choose_map(bg_map,3)
+            cur_map[1] = 3
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0]+794,curlc[1])
+        elif moveLeft and player[1].left <= 0 and cur_map[1] == 4:
+            cur_map[0] = choose_map(bg_map,0)
+            cur_map[1] = 0
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0]+794,curlc[1])
         if moveRight and player[1].right < WINDOWWIDTH:
             player[1].move_ip(PLAYERMOVERATE, 0)
+        elif moveRight and player[1].right >= WINDOWWIDTH and cur_map[1] == 3:
+            cur_map[0] = choose_map(bg_map,0)
+            cur_map[1] = 0
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0]-794,curlc[1])
+        elif moveRight and player[1].right >= WINDOWWIDTH and cur_map[1] == 0:
+            cur_map[0] = choose_map(bg_map,4)
+            cur_map[1] = 4
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0]-794,curlc[1])
         if moveUp and player[1].top > 0:
             player[1].move_ip(0, -1 * PLAYERMOVERATE)
+        elif moveUp and player[1].top <= 0 and cur_map[1] == 0:
+            cur_map[0] = choose_map(bg_map,1)
+            cur_map[1] = 1
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0],curlc[1]+392)
+        elif moveUp and player[1].top <= 0 and cur_map[1] == 2:
+            cur_map[0] = choose_map(bg_map,0)
+            cur_map[1] = 0
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0],curlc[1]+392)
         if moveDown and player[1].bottom < WINDOWHEIGHT:
             player[1].move_ip(0, PLAYERMOVERATE)
+        elif moveDown and player[1].bottom >= WINDOWHEIGHT and cur_map[1] == 0:
+            cur_map[0] = choose_map(bg_map,2)
+            cur_map[1] = 2
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0],curlc[1]-392)
+        elif moveDown and player[1].bottom >= WINDOWHEIGHT and cur_map[1] == 1:
+            cur_map[0] = choose_map(bg_map,0)
+            cur_map[1] = 0
+            curlc = player[1].topleft
+            player[1].topleft = (curlc[0],curlc[1]-392)
 
        
         # Draw the game world on the window.
         #windowSurface.fill(BACKGROUNDCOLOR)
-        windowSurface.blit(dragonia[0],dragonia[1])
+        windowSurface.blit(cur_map[0][0],cur_map[0][1])
         
         # Draw the player's rectangle
         windowSurface.blit(player[0], player[1])
-        draw_enemies(the_enemies)
+        draw_enemies(the_map_enemies[cur_map[1]])
         if drop != False:
                 windowSurface.blit(the_drop[0],the_drop[1])
                 #time.sleep(2)
         # add health above enemies and players
         player_health(player[2].health,player,player[2].shield)
         j = 0
-        while j!= len(the_enemies):
+        while j!= len(the_map_enemies[cur_map[1]]):
             if player[2].lvl > 1 and leveled == True:
-                the_enemies[j][2].health += player[2].lvl*25*difficulty
+                the_map_enemies[cur_map[1]][j][2].health += player[2].lvl*25*difficulty
                 if difficulty == 1:
-                    the_enemies[j][2].mod = 0.75
+                    the_map_enemies[cur_map[1]][j][2].mod = 0.75
                 elif difficulty == 3:
-                    the_enemies[j][2].mod = 1.25
-                the_enemies[j][2].miss -= 1
-            enemy_health(the_enemies[j][2].health,the_enemies[j])
+                    the_map_enemies[cur_map[1]][j][2].mod = 1.25
+                the_map_enemies[cur_map[1]][j][2].miss -= 1
+            enemy_health(the_map_enemies[cur_map[1]][j][2].health,the_map_enemies[cur_map[1]][j])
             j += 1
         leveled = False
         if player[2].shield != 0:
@@ -1109,7 +1251,7 @@ while True:
                 windowSurface.blit(ability2[0],ability2[1])
                 
         # Check if any of the enemies have hit the player.
-        current_enemy = playerHasHitEnemy(player[1], the_enemies)
+        current_enemy = playerHasHitEnemy(player[1], the_map_enemies[cur_map[1]])
         if drop == True:
             picked_up_loot = player[1].colliderect(the_drop[1])
             if picked_up_loot:
@@ -1119,99 +1261,100 @@ while True:
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_sword()
                 if the_drop[3] == 'belt':
                     drawText('You found a Belt!',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_belt()
                 if the_drop[3] == 'cloak':
                     drawText('You found a Cloak!',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_cloak()
                 if the_drop[3] == 'eye':
                     drawText('You found the Cyclops\' eye!',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_eye()
                 if the_drop[3] == 'legendary':
                     drawText('You found a LEGENDARY weapon.',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_legendary_weapon()
                 if the_drop[3] == 'trinket':
                     drawText('You found a SHINY Ring.',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_trinket()
                 if the_drop[3] == 'air':
                     drawText('You found an Air Essence.',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_air()
                 if the_drop[3] == 'earth':
                     drawText('You found an Earth Essence.',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_earth()
                 if the_drop[3] == 'fire':
                     drawText('You found a Fire Essence.',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_fire()
                 if the_drop[3] == 'water':
                     drawText('You found a Water Essence.',font,windowSurface,0,0,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
-                    waitForPlayerToPressKey()
+                    waitForPlayerToPressKey(False)
                     player[2].f_water()
         player_health(player[2].health,player,player[2].shield)
         pygame.display.update()
         if current_enemy != -1:
-            loot_drop = the_enemies[current_enemy][1].topleft
+            loot_drop = the_map_enemies[cur_map[1]][current_enemy][1].topleft
             loot_drop = (loot_drop[0]+20,loot_drop[1]+20)
             moveLeft = moveRight = moveUp = moveDown = False
             drawText('You have encountered an enemy! Prepare to fight!',font,windowSurface,0,0,(0,0,0))
             pygame.display.update()
             time.sleep(1)
-            alive = battle(place(),player,the_enemies[current_enemy])
+            alive = battle(place(),player,the_map_enemies[cur_map[1]][current_enemy])
             if alive[0] == False:
                 break
             elif alive[1] == False:
                 #print the_enemies
                 #print current_enemy
                 #print the_enemies[current_enemy]
-                the_drop = loot(the_enemies[current_enemy])
+                the_drop = loot(the_map_enemies[cur_map[1]][current_enemy])
                 if the_drop[2] == True:
                     drop = True
                     the_drop[1].topleft = loot_drop
                 else:
                     drop = False
-                the_enemies.remove(the_enemies[current_enemy])
+                the_map_enemies[cur_map[1]].remove(the_map_enemies[cur_map[1]][current_enemy])
                 leveled = True
-                if the_enemies == []:
+                if the_map_enemies == []:
                     you_win = True
                     break
-            draw_enemies(the_enemies)
+            LowHPSound.stop()
+            draw_enemies(the_map_enemies[1])
             if drop != False:
                 windowSurface.blit(the_drop[0],the_drop[1])
                 #time.sleep(2)
@@ -1233,18 +1376,21 @@ while True:
         drawText('You have slain all the enemies!', font, windowSurface, 0, 0,(255,255,255))
         drawText('Press ENTER to start a new game', font, windowSurface, 0, 30,(255,255,255))
         pygame.display.update()
-        waitForPlayerToPressKey()
+        waitForPlayerToPressKey(False)
     else:
         pygame.mixer.music.stop()
-        gameOverSound.play()
+        #gameOverSound.play()
+        LowHPSound.stop()
+        DeathSound.play()
         windowSurface.fill((255,0,0))
         gover = gameover()
         windowSurface.blit(gover[0],gover[1])
         drawText('GAME OVER', font, windowSurface, 0, 0,(0,0,0))
         drawText('Press ENTER to start a new game.', font, windowSurface, 0, 30,(0,0,0))
         pygame.display.update()
-        waitForPlayerToPressKey()
-        gameOverSound.stop()
+        waitForPlayerToPressKey(False)
+        #gameOverSound.stop()
+        DeathSound.stop()
     
 
 

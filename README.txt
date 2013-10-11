@@ -6,7 +6,7 @@ Art Needed:
 	Pixel size for enemies is 100x110 (for now)
 	
 	Any additional backgrounds are always welcome.
-
+	Need art for animations!
 	Warrior: 
 		Heroic Slash
 		Furious Barrage
