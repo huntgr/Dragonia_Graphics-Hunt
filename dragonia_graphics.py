@@ -1236,16 +1236,18 @@ while True:
         # add health above enemies and players
         player_health(player[2].health,player,player[2].shield)
         j = 0
-        while j!= len(the_map_enemies[cur_map[1]]):
-            if player[2].lvl > 1 and leveled == True:
-                the_map_enemies[cur_map[1]][j][2].health += player[2].lvl*25*difficulty
-                if difficulty == 1:
-                    the_map_enemies[cur_map[1]][j][2].mod = 0.75
-                elif difficulty == 3:
-                    the_map_enemies[cur_map[1]][j][2].mod = 1.25
-                the_map_enemies[cur_map[1]][j][2].miss -= 1
-            enemy_health(the_map_enemies[cur_map[1]][j][2].health,the_map_enemies[cur_map[1]][j])
-            j += 1
+        if leveled = True:
+            for x in the_map_enemies:
+                while j!= len(the_map_enemies[x]):
+                    if player[2].lvl > 1:
+                        the_map_enemies[x][j][2].health += player[2].lvl*25*difficulty
+                        if difficulty == 1:
+                            the_map_enemies[x][j][2].mod = 0.75
+                        elif difficulty == 3:
+                            the_map_enemies[x][j][2].mod = 1.25
+                        the_map_enemies[x][j][2].miss -= 1
+                    enemy_health(the_map_enemies[x][j][2].health,the_map_enemies[x][j])
+                    j += 1
         leveled = False
         if player[2].shield != 0:
                 if player[2].cls == 'mage':
