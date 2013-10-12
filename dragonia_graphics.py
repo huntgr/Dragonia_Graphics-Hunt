@@ -423,7 +423,7 @@ def potions():
 def shop(player):
     exit_sn = exit_sign()
     exit_sn[1].topleft = (0,430)
-    player[1].topleft = (0,0)
+    player[1].topleft = (0,30)
     windowSurface.fill(BACKGROUNDCOLOR)
     windowSurface.blit(player[0],player[1])
     player_health(player[2].health,player,player[2].shield)
@@ -433,7 +433,20 @@ def shop(player):
         pots[i][1].topleft = (200+(i*100),150)
         windowSurface.blit(pots[i][0],pots[i][1])
     pygame.display.update()
-    time.sleep(5)
+    while True:
+        for event in pygame.event.get():
+                if event.type == QUIT:
+                    terminate()
+                if event.type == KEYUP:
+                    if event.key == K_ESCAPE:
+                        terminate()
+        pressed = pygame.mouse.get_pressed()
+        if pressed[0] == True:
+            pos = mouse_test()
+            if exit_sn[1].collidepoint(pos):
+                break
+    pygame.event.set_grab(False)
+    #time.sleep(5)
     
 def battle(place,player,enemy):
     alive = [True,True,True]
@@ -1283,7 +1296,8 @@ while True:
                 #time.sleep(2)
         # add health above enemies and players
         player_health(player[2].health,player,player[2].shield)
-        if player[1].colliderect(the_shop[1]):
+        if cur_map[1] == 0 and player[1].colliderect(the_shop[1]):
+            moveLeft = moveRight = moveUp = moveDown = False
             shop(player)
         j = 0
         for x in range(5):
