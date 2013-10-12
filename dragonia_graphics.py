@@ -159,6 +159,18 @@ def coin():
     data = [coinImag,coinRect]
     return data
 
+def exit_sign():
+    img = pygame.image.load('exit.png')
+    rct = img.get_rect()
+    data = [img,rct]
+    return data
+
+def shop_pic():
+    img = pygame.image.load('shop.png')
+    rct = img.get_rect()
+    data = [img,rct]
+    return data
+    
 def cleric_empowerment():
     empImage = pygame.image.load('cleric_empowerment_dragonia.png')
     empRect = empImage.get_rect()
@@ -409,14 +421,19 @@ def potions():
     return potions
 
 def shop(player):
+    exit_sn = exit_sign()
+    exit_sn[1].topleft = (0,430)
+    player[1].topleft = (0,0)
     windowSurface.fill(BACKGROUNDCOLOR)
     windowSurface.blit(player[0],player[1])
-    player_health(player[2].health,plyr,player[2].shield)
+    player_health(player[2].health,player,player[2].shield)
+    windowSurface.blit(exit_sn[0],exit_sn[1])
     pots = potions()
     for i in range(5):
-        pots[i].topleft = (200+(i*100),150)
-        windowSurface.blit(pots[i][0],pots[i][0]
+        pots[i][1].topleft = (200+(i*100),150)
+        windowSurface.blit(pots[i][0],pots[i][1])
     pygame.display.update()
+    time.sleep(5)
     
 def battle(place,player,enemy):
     alive = [True,True,True]
@@ -1134,7 +1151,8 @@ enemies = ['ogre.png','snake.png','gargoyle_dragonia.png','dragon.png','cyclops_
 #the_enemies = all_enemies(enemies,locations)
 #topScore = 0
 bg_map = ['default.png','map_up.png','map_down.png','map_left.png','map_right.png']
-
+the_shop = shop_pic()
+the_shop[1].topleft = (400,180)
 cur_map = [[],[]]
 cur_map[0] = choose_map(bg_map,0)
 cur_map[1] = 0
@@ -1255,7 +1273,8 @@ while True:
         # Draw the game world on the window.
         #windowSurface.fill(BACKGROUNDCOLOR)
         windowSurface.blit(cur_map[0][0],cur_map[0][1])
-        
+        if cur_map[1] == 0:
+            windowSurface.blit(the_shop[0],the_shop[1])
         # Draw the player's rectangle
         windowSurface.blit(player[0], player[1])
         draw_enemies(the_map_enemies[cur_map[1]])
@@ -1264,6 +1283,8 @@ while True:
                 #time.sleep(2)
         # add health above enemies and players
         player_health(player[2].health,player,player[2].shield)
+        if player[1].colliderect(the_shop[1]):
+            shop(player)
         j = 0
         for x in range(5):
             while j!= len(the_map_enemies[x]):
