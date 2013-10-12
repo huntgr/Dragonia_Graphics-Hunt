@@ -8,7 +8,7 @@ WINDOWHEIGHT = 504
 TEXTCOLOR = (255,255,255)
 BACKGROUNDCOLOR = (0,0,0)
 FPS_COM = 50
-FPS = 60
+FPS = 80
 PLAYERMOVERATE = 5
 room = False
 
@@ -151,6 +151,12 @@ def gameover():
     gameoverImage = pygame.image.load('gameover_.png')
     gameoverRect = gameoverImage.get_rect()
     data = [gameoverImage, gameoverRect]
+    return data
+
+def coin():
+    coinImg = pygame.image.load('coin.png')
+    coinRect = coinImg.get_rect()
+    data = [coinImag,coinRect]
     return data
 
 def cleric_empowerment():
@@ -390,6 +396,26 @@ def swashbuckler_battle(place,enemy_place,plyr,enemy,player,en_attack):
     windowSurface.blit(plyr[0],plyr[1])
     enemy_health(enemy[2].health,enemy_place)
     player_health(player[2].health,plyr,player[2].shield)
+    pygame.display.update()
+
+def potions():
+    potions = []
+    pots = ['health_pot.png','strength_pot.png','dex_pot.png','int_pot.png','stam_pot.png']
+    for x in range(5):
+        img = pygame.image.load(pots[x])
+        rect = img.get_rect()
+        data = [img,rect]
+        potions.append(data)
+    return potions
+
+def shop(player):
+    windowSurface.fill(BACKGROUNDCOLOR)
+    windowSurface.blit(player[0],player[1])
+    player_health(player[2].health,plyr,player[2].shield)
+    pots = potions()
+    for i in range(5):
+        pots[i].topleft = (200+(i*100),150)
+        windowSurface.blit(pots[i][0],pots[i][0]
     pygame.display.update()
     
 def battle(place,player,enemy):
@@ -737,6 +763,9 @@ def draw_enemies(the_enemies):
         i += 1
         #pygame.display.update()
 
+def draw_potions(potions):
+    drawText('Potions: {0}'.format(int(potions)),pygame.font.SysFont('centaur', 30),windowSurface,0,0,(255,255,255))
+    
 def loot(enemy):
     rand = random.randint(0,100)
     dropped = False
@@ -1236,19 +1265,21 @@ while True:
         # add health above enemies and players
         player_health(player[2].health,player,player[2].shield)
         j = 0
-        if leveled = True:
-            for x in the_map_enemies:
-                while j!= len(the_map_enemies[x]):
-                    if player[2].lvl > 1:
-                        the_map_enemies[x][j][2].health += player[2].lvl*25*difficulty
-                        if difficulty == 1:
-                            the_map_enemies[x][j][2].mod = 0.75
-                        elif difficulty == 3:
-                            the_map_enemies[x][j][2].mod = 1.25
-                        the_map_enemies[x][j][2].miss -= 1
-                    enemy_health(the_map_enemies[x][j][2].health,the_map_enemies[x][j])
-                    j += 1
+        for x in range(5):
+            while j!= len(the_map_enemies[x]):
+                if player[2].lvl > 1 and leveled == True:
+                    the_map_enemies[x][j][2].health += player[2].lvl*25*difficulty
+                    if difficulty == 1:
+                        the_map_enemies[x][j][2].mod = 0.75
+                    elif difficulty == 3:
+                        the_map_enemies[x][j][2].mod = 1.25
+                    the_map_enemies[x][j][2].miss -= 1
+                j += 1
+            j = 0
         leveled = False
+        for y in range(len(the_map_enemies[cur_map[1]])):
+            enemy_health(the_map_enemies[cur_map[1]][y][2].health,the_map_enemies[cur_map[1]][y])
+        draw_potions(player[2].health_pot)
         if player[2].shield != 0:
                 if player[2].cls == 'mage':
                     ability2 = mage_shield()
@@ -1265,70 +1296,70 @@ while True:
             if picked_up_loot:
                 drop = False
                 if the_drop[3] == 'sword':
-                    drawText('You found a Sword!',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found a Sword!',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_sword()
                 if the_drop[3] == 'belt':
-                    drawText('You found a Belt!',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found a Belt!',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_belt()
                 if the_drop[3] == 'cloak':
-                    drawText('You found a Cloak!',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found a Cloak!',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_cloak()
                 if the_drop[3] == 'eye':
-                    drawText('You found the Cyclops\' eye!',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found the Cyclops\' eye!',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_eye()
                 if the_drop[3] == 'legendary':
-                    drawText('You found a LEGENDARY weapon.',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found a LEGENDARY weapon.',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_legendary_weapon()
                 if the_drop[3] == 'trinket':
-                    drawText('You found a SHINY Ring.',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found a SHINY Ring.',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_trinket()
                 if the_drop[3] == 'air':
-                    drawText('You found an Air Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found an Air Essence.',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_air()
                 if the_drop[3] == 'earth':
-                    drawText('You found an Earth Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found an Earth Essence.',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_earth()
                 if the_drop[3] == 'fire':
-                    drawText('You found a Fire Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found a Fire Essence.',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
                     waitForPlayerToPressKey(False)
                     player[2].f_fire()
                 if the_drop[3] == 'water':
-                    drawText('You found a Water Essence.',font,windowSurface,0,0,(0,0,0))
+                    drawText('You found a Water Essence.',font,windowSurface,300,250,(0,0,0))
                     drawText('Press ENTER to continue!',font,windowSurface,0,25,(0,0,0))
                     pygame.display.update()
                     moveLeft = moveRight = moveUp = moveDown = False
