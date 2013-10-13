@@ -434,6 +434,13 @@ def shop(player):
         windowSurface.blit(pots[i][0],pots[i][1])
     pygame.display.update()
     while True:
+        windowSurface.fill(BACKGROUNDCOLOR)
+        windowSurface.blit(player[0],player[1])
+        player_health(player[2].health,player,player[2].shield)
+        windowSurface.blit(exit_sn[0],exit_sn[1])
+        for i in range(5):
+            pots[i][1].topleft = (200+(i*100),150)
+            windowSurface.blit(pots[i][0],pots[i][1])
         for event in pygame.event.get():
                 if event.type == QUIT:
                     terminate()
@@ -441,10 +448,27 @@ def shop(player):
                     if event.key == K_ESCAPE:
                         terminate()
         pressed = pygame.mouse.get_pressed()
+        pos = mouse_test()
+        if pots[0][1].collidepoint(pos):
+            fnt = pygame.font.SysFont('centaur', 22)
+            drawText('Heals your character 50%.',fnt,windowSurface,pos[0]-50,pos[1],TEXTCOLOR)
+        elif pots[1][1].collidepoint(pos):
+            fnt = pygame.font.SysFont('centaur', 22)
+            drawText('Gives your character 30 strength for 3 battles.',fnt,windowSurface,pos[0]-50,pos[1],TEXTCOLOR)
+        elif pots[2][1].collidepoint(pos):
+            fnt = pygame.font.SysFont('centaur', 22)
+            drawText('Gives your character 30 dexterity for 3 battles.',fnt,windowSurface,pos[0]-50,pos[1],TEXTCOLOR)
+        elif pots[3][1].collidepoint(pos):
+            fnt = pygame.font.SysFont('centaur', 22)
+            drawText('Gives your character 30 intellect for 3 battles.',fnt,windowSurface,pos[0]-50,pos[1],TEXTCOLOR)
+        elif pots[4][1].collidepoint(pos):
+            fnt = pygame.font.SysFont('centaur', 22)
+            drawText('Gives your character 30 stamina for 3 battles.',fnt,windowSurface,pos[0]-50,pos[1],TEXTCOLOR)
         if pressed[0] == True:
             pos = mouse_test()
             if exit_sn[1].collidepoint(pos):
                 break
+        pygame.display.update()
     pygame.event.set_grab(False)
     #time.sleep(5)
     
