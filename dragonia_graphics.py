@@ -156,7 +156,7 @@ def gameover():
 def coin():
     coinImg = pygame.image.load('coin.png')
     coinRect = coinImg.get_rect()
-    data = [coinImag,coinRect]
+    data = [coinImg,coinRect]
     return data
 
 def exit_sign():
@@ -628,7 +628,9 @@ def battle(place,player,enemy):
                     if player[2].health_pot >= 1:
                         player[2].f_potion()
                         player[2].health_pot -= 1
-                        player[2].health = player[2].stamina*10
+                        player[2].health += player[2].stamina*5
+                        if player[2].health > player[2].stamina*10:
+                            player[2].health = player[2].stamina*10
                         drawText('You healed to full!', font, windowSurface, 0, 0,(255,255,255))
                     else:
                         drawText('You have no potions left.',font,windowSurface,0,0,(255,255,255))
@@ -697,6 +699,20 @@ def all_enemies(enemies,locations,difficulty,num):
         locations[num].remove(locations[num][loc])
         x += 1
     return all_enemies
+
+def coin_drops():
+    map_coins = []
+    coins = []
+    num = random.randint(0,5)
+    locations = [(120,20),(240,20),(360,20),(480,20),(600,20),(720,20),(0,130),(120,130),(240,130),(360,130),(480,130),(600,130),(720,130),(0,260),(120,260),(240,260),(360,260),(480,260),(600,260),(720,260),(0,390),(120,390),(240,390),(360,390),(480,390),(600,390),(720,390)]
+    for i in range(5):
+        for j in range(num):
+            thecoin = coin()
+            thecoin.append(random.randint(1,5))
+            thecoin[1].topleft = locations[random.randint(0,len(locations)-1)]
+            coins.append(thecoin)
+        map_coins.append(coins)
+    return map_coins
 
 def map_enemies(enemies,locations,difficulty):
     map_enemies = []
@@ -1215,6 +1231,7 @@ while True:
     player[1].topleft = (0,20)
     difficulty = choose_difficulty()
     room = class_abilities(player)
+    coins = coin_drops()
     if room == True:
         pygame.mixer.music.stop()
         pygame.mixer.music.load('room_music.wav')
@@ -1312,6 +1329,8 @@ while True:
         windowSurface.blit(cur_map[0][0],cur_map[0][1])
         if cur_map[1] == 0:
             windowSurface.blit(the_shop[0],the_shop[1])
+        for z in range(len(coins[cur_map[1]])):
+            windowSurface.blit(coins[cur_map[1]][z][0], coins[cur_map[1]][z][1])
         # Draw the player's rectangle
         windowSurface.blit(player[0], player[1])
         draw_enemies(the_map_enemies[cur_map[1]])
